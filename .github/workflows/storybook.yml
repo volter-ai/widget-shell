@@ -44,7 +44,15 @@ jobs:
             examples/${{ matrix.framework }}/package-lock.json
       - run: npm ci --ignore-scripts
       - run: npm run build
+      - name: Pack the consumer artifact
+        run: |
+          mkdir -p "$RUNNER_TEMP/widget-shell-package"
+          npm pack --pack-destination "$RUNNER_TEMP/widget-shell-package"
+          echo "WIDGET_SHELL_TARBALL=$(find "$RUNNER_TEMP/widget-shell-package" -name '*.tgz' -print -quit)" >> "$GITHUB_ENV"
       - run: npm ci --ignore-scripts
+        working-directory: examples/${{ matrix.framework }}
+      - name: Install Widget Shell as a consumer
+        run: npm install --no-save --package-lock=false --ignore-scripts "$WIDGET_SHELL_TARBALL"
         working-directory: examples/${{ matrix.framework }}
       - run: npm run build
         working-directory: examples/${{ matrix.framework }}

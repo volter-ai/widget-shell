@@ -9,9 +9,6 @@
     "build:firefox": "wxt build -b firefox",
     "postinstall": "wxt prepare"
   },
-  "dependencies": {
-    "@volter-ai-dev/widget-shell": "file:../.."
-  },
   "devDependencies": {
     "typescript": "^5.9.3",
     "vite": "^8.2.2",

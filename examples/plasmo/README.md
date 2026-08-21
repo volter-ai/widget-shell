@@ -4,8 +4,11 @@ This is a complete Plasmo project. A plain content script owns Widget Shell's al
 
 ```sh
 npm install
+npm install --no-save @volter-ai-dev/widget-shell
 npm run build
 ```
+
+Inside this repository, install a tarball from `npm pack ../..` instead. The nightly job uses that release-shaped path so local source dependencies cannot leak into the example lockfile.
 
 Load `build/chrome-mv3-prod` as an unpacked extension and visit `https://example.com/`.
 
