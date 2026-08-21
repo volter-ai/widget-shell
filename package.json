@@ -1,6 +1,6 @@
 {
   "name": "@volter-ai-dev/widget-shell",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "A production-grade overlay runtime for turning responsive web apps into polished widgets and browser extensions.",
   "type": "module",
   "types": "./dist/index.d.ts",

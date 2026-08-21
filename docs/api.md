@@ -98,7 +98,7 @@ Persisted geometry is always validated and constrained against the current host 
 
 ## Custom surfaces
 
-The default behavioral controls stay intact while applications replace their visuals:
+The collapsed launcher is transparent by default. Supplying `theme.accent` opts into a filled launcher while the default behavioral controls stay intact; applications can also replace the visual node entirely:
 
 ```ts
 createOverlay({
