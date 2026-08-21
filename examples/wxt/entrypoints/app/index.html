@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WXT overlay application</title>
+    <style>
+      body { margin: 0; padding: 24px; color: #20212b; background: #f6f7fb; font: 15px/1.5 system-ui, sans-serif; }
+      button { padding: 10px 14px; border: 0; border-radius: 10px; color: white; background: #4457d9; font: inherit; }
+      output { display: block; margin-top: 18px; overflow-wrap: anywhere; color: #626577; }
+    </style>
+  </head>
+  <body>
+    <h1>Your existing app</h1>
+    <p>This extension page receives only capabilities explicitly granted by its host.</p>
+    <button type="button">Read host page URL</button>
+    <output aria-live="polite"></output>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

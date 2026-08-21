@@ -1,4 +1,4 @@
-name: Storybook
+name: Nightly
 
 on:
   workflow_dispatch:
@@ -24,3 +24,32 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run storybook:build
+
+  framework-compatibility:
+    name: ${{ matrix.framework }} compatibility
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        framework: [wxt, plasmo]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            examples/${{ matrix.framework }}/package-lock.json
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: npm ci --ignore-scripts
+        working-directory: examples/${{ matrix.framework }}
+      - run: npm run build
+        working-directory: examples/${{ matrix.framework }}
+      - if: matrix.framework == 'wxt'
+        run: npm run build:firefox
+        working-directory: examples/wxt
+      - run: npm audit --omit=dev --audit-level=low
+        working-directory: examples/${{ matrix.framework }}

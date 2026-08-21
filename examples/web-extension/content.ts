@@ -1,16 +1,14 @@
-import { createOverlay } from "../../src";
-
-const extensionOrigin = new URL(chrome.runtime.getURL("/")).origin;
-const geometryKey = "widget-shell-example:geometry";
+import {
+  createExtensionGeometryPersistence,
+  createExtensionIframeContent,
+  createOverlay,
+} from "../../src";
 
 createOverlay({
   id: "widget-shell-example",
-  content: {
-    kind: "iframe",
-    src: chrome.runtime.getURL("app.html"),
-    allowedOrigin: extensionOrigin,
+  content: createExtensionIframeContent(chrome.runtime, "app.html", {
     title: "Widget Shell example application",
-  },
+  }),
   launcher: {
     label: "Open example application",
     badge: 2,
@@ -20,16 +18,6 @@ createOverlay({
     "selection.read": () => window.getSelection()?.toString() ?? "",
   },
   behavior: {
-    persistence: {
-      async load() {
-        return (await chrome.storage.local.get(geometryKey))[geometryKey];
-      },
-      async save(_id, geometry) {
-        await chrome.storage.local.set({ [geometryKey]: geometry });
-      },
-      async remove() {
-        await chrome.storage.local.remove(geometryKey);
-      },
-    },
+    persistence: createExtensionGeometryPersistence(chrome.storage.local),
   },
 }).mount();

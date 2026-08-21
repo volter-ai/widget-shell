@@ -10,3 +10,5 @@ Notable changes will be documented here once the first prerelease is published. 
 - Added exclusive or independent coordination across multiple overlays.
 - Added theme tokens and application-owned launcher, loading, and error surfaces.
 - Added Storybook and a narrowly permissioned Manifest V3 extension example.
+- Added a shared WebExtension origin/storage adapter and complete WXT and Plasmo example projects.
+- Added nightly real-toolchain compatibility builds without adding framework cost to merge CI.

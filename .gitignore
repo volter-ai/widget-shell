@@ -1,4 +1,8 @@
 node_modules/
+**/.plasmo/
+**/.wxt/
+**/.output/
+examples/plasmo/build/
 dist/
 storybook-static/
 coverage/
@@ -7,4 +11,3 @@ coverage/
 .env
 .env.*
 !.env.example
-

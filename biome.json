@@ -4,9 +4,13 @@
     "includes": [
       "**",
       "!!node_modules",
+      "!!**/.plasmo",
+      "!!**/.wxt",
+      "!!**/.output",
       "!!dist",
       "!!storybook-static",
-      "!!examples/web-extension/dist"
+      "!!examples/web-extension/dist",
+      "!!examples/plasmo/build"
     ]
   },
   "formatter": {

@@ -1,0 +1,37 @@
+{
+  "name": "widget-shell-plasmo-example",
+  "displayName": "Widget Shell · Plasmo example",
+  "description": "A narrowly permissioned Widget Shell integration for Plasmo.",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "plasmo build"
+  },
+  "dependencies": {
+    "@volter-ai-dev/widget-shell": "file:../..",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.1.1",
+    "@types/node": "^24.0.0",
+    "plasmo": "^0.90.5",
+    "typescript": "^5.9.3"
+  },
+  "manifest": {
+    "permissions": [
+      "storage"
+    ],
+    "web_accessible_resources": [
+      {
+        "resources": [
+          "tabs/app.html"
+        ],
+        "matches": [
+          "https://example.com/*"
+        ]
+      }
+    ]
+  }
+}

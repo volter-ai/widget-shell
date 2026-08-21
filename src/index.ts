@@ -17,3 +17,11 @@ export {
   type GeometryPersistence,
   parsePersistedGeometry,
 } from "./dom/persistence";
+export {
+  createExtensionGeometryPersistence,
+  createExtensionIframeContent,
+  type ExtensionIframeOptions,
+  type ExtensionRuntimeLike,
+  type ExtensionStorageAreaLike,
+  extensionOrigin,
+} from "./web-extension";

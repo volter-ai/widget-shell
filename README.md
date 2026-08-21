@@ -70,6 +70,8 @@ It is not an extension build system, application framework, backend, chat framew
 
 The project also publishes an enforced [performance contract](docs/performance.md); the complete extension host currently ships at approximately 7 KiB gzip before the guest application.
 
+Use the [extension integration guide](docs/extensions.md) for raw Manifest V3, WXT, and Plasmo projects. The framework examples are built nightly with their real toolchains while the merge gate remains headless and fast.
+
 ## Contributing
 
 We welcome bug reports, design feedback, documentation fixes, adapters, and focused implementation contributions. Start with [CONTRIBUTING.md](CONTRIBUTING.md). Security issues must follow [SECURITY.md](SECURITY.md), not the public issue tracker.

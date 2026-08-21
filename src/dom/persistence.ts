@@ -28,18 +28,18 @@ export function parsePersistedGeometry(value: unknown): WindowGeometry | undefin
 }
 
 export function createLocalStorageGeometryPersistence(
-  storage: Storage,
+  storageArea: Storage,
   prefix = "widget-shell:geometry:",
 ): GeometryPersistence {
   return {
     load(id) {
-      return storage.getItem(`${prefix}${id}`);
+      return storageArea.getItem(`${prefix}${id}`);
     },
     save(id, geometry) {
-      storage.setItem(`${prefix}${id}`, JSON.stringify({ version: 1, geometry }));
+      storageArea.setItem(`${prefix}${id}`, JSON.stringify({ version: 1, geometry }));
     },
     remove(id) {
-      storage.removeItem(`${prefix}${id}`);
+      storageArea.removeItem(`${prefix}${id}`);
     },
   };
 }

@@ -11,4 +11,17 @@ updates:
     directory: /
     schedule:
       interval: monthly
-
+  - package-ecosystem: npm
+    directory: /examples/wxt
+    schedule:
+      interval: weekly
+    groups:
+      wxt-example-dependencies:
+        patterns: ["*"]
+  - package-ecosystem: npm
+    directory: /examples/plasmo
+    schedule:
+      interval: weekly
+    groups:
+      plasmo-example-dependencies:
+        patterns: ["*"]

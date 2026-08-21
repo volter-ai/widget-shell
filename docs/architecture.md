@@ -35,6 +35,8 @@ Messages have a versioned envelope, instance identifier, request identifier, exp
 - **Lucarne:** an injection adapter serializes the mounting entry point for a controlled browser.
 - **Framework adapters:** React, Preact, Vue, or Svelte integrate lifecycle without changing core semantics.
 
+WXT and Plasmo do not require framework-specific runtime forks. Both consume the shared WebExtension adapter; their examples contain only the framework-owned entry-point, invalidation, and build conventions. This keeps the security and persistence boundary identical across extension toolchains.
+
 ## Non-negotiable invariants
 
 - One live host per instance identifier

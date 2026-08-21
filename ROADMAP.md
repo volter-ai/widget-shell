@@ -17,7 +17,7 @@ The roadmap is capability-oriented; dates are intentionally omitted.
 
 ## 0.2 — integration breadth
 
-- WXT and Plasmo examples/adapters
+- WXT and Plasmo examples/adapters *(implemented; real-toolchain builds run nightly)*
 - Shadow DOM host mode
 - React and Preact adapters
 

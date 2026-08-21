@@ -1,12 +1,29 @@
 # API guide
 
-Widget Shell currently publishes three tree-shakeable entry points:
+Widget Shell currently publishes four tree-shakeable entry points:
 
 - `@volter-ai-dev/widget-shell` — the complete DOM host and all core exports
 - `@volter-ai-dev/widget-shell/core` — framework- and browser-global-free state, geometry, and protocol primitives
 - `@volter-ai-dev/widget-shell/frame` — the guest-side bridge
+- `@volter-ai-dev/widget-shell/web-extension` — validated extension-origin and storage adapters
 
 APIs may change before `0.1.0`.
+
+## WebExtension adapter
+
+Do not derive an extension message origin with `new URL(runtime.getURL("/")).origin`: standard URL implementations serialize extension schemes as `"null"`. The adapter constructs and validates the current extension origin and keeps persisted geometry scoped by overlay identifier:
+
+```ts
+import {
+  createExtensionGeometryPersistence,
+  createExtensionIframeContent,
+} from "@volter-ai-dev/widget-shell/web-extension";
+
+const content = createExtensionIframeContent(browser.runtime, "app.html", {
+  title: "Acme",
+});
+const persistence = createExtensionGeometryPersistence(browser.storage.local);
+```
 
 ## Create an overlay
 
@@ -86,4 +103,3 @@ This preserves labeling, keyboard behavior, badges, geometry, and lifecycle even
 The move and resize handles support pointer input and arrow keys. Hold Shift for larger keyboard steps. They disappear in sheet and full-screen modes, where manual floating geometry is retained and restored when the host grows again.
 
 The controller exposes `geometry`, `mode`, `setGeometry()`, and `resetGeometry()` for host-level controls. Guest applications use `connectOverlayApp()` to request granted capabilities, close themselves, or update their launcher badge.
-

@@ -1,0 +1,19 @@
+{
+  "name": "widget-shell-wxt-example",
+  "description": "A narrowly permissioned Widget Shell integration for WXT.",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "wxt build",
+    "build:firefox": "wxt build -b firefox",
+    "postinstall": "wxt prepare"
+  },
+  "dependencies": {
+    "@volter-ai-dev/widget-shell": "file:../.."
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "wxt": "^0.21.4"
+  }
+}

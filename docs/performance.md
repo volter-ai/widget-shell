@@ -10,9 +10,10 @@ The headless merge gate builds a real Manifest V3 content-script bundle and enfo
 | --- | ---: |
 | Framework-free core | 2.5 KiB |
 | Guest bridge | 2 KiB |
+| WebExtension adapter | 1 KiB |
 | Complete extension host, excluding the guest app | 10 KiB |
 
-The first interaction-system build measures approximately 1.8 KiB, 1.4 KiB, and 7 KiB respectively. Budgets are ceilings, not targets to fill.
+The adoption-layer build measures approximately 1.8 KiB for core, 1.4 KiB for the guest bridge, 0.7 KiB for the WebExtension adapter, and 7 KiB for the complete host. Budgets are ceilings, not targets to fill.
 
 ## Runtime rules
 
@@ -25,4 +26,3 @@ The first interaction-system build measures approximately 1.8 KiB, 1.4 KiB, and 
 - Closing preserves the loaded guest for continuity; destroying removes all owned listeners, nodes, timers, and registry entries.
 
 Chromium interaction coverage belongs in the nightly workflow. Merge CI remains headless and under one minute.
-
