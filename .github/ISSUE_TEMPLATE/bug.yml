@@ -1,0 +1,36 @@
+name: Bug report
+description: Report reproducible incorrect behavior
+title: "bug: "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: Please do not report vulnerabilities here. Follow SECURITY.md instead.
+  - type: textarea
+    id: behavior
+    attributes:
+      label: What happened?
+      description: Include what you expected and what occurred.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Link a repository or provide the smallest sequence that reproduces the problem.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Widget Shell version
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Browser, extension framework, operating system, and delivery mode.
+    validations:
+      required: true
+

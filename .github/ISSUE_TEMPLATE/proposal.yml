@@ -1,0 +1,34 @@
+name: Product or API proposal
+description: Propose a scoped capability or public API change
+title: "proposal: "
+labels: ["proposal", "needs-triage"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: User problem
+      description: Who experiences the problem and what are they unable to do?
+    validations:
+      required: true
+  - type: textarea
+    id: approach
+    attributes:
+      label: Proposed approach
+      description: Describe behavior and public API, not only implementation.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives and prior art
+      description: What can existing extension, positioning, iframe, or widget tooling already solve?
+    validations:
+      required: true
+  - type: textarea
+    id: boundary
+    attributes:
+      label: Product-boundary fit
+      description: Why does this belong in core, an adapter, or an example?
+    validations:
+      required: true
+
