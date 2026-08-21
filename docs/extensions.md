@@ -29,7 +29,7 @@ The extension-local HTML entry point is emitted as `app.html` and explicitly dec
 
 [`examples/plasmo`](../examples/plasmo) uses a plain content script rather than CSUI. Adding Plasmo's CSUI host would create a second isolation and lifecycle layer without improving security. A global singleton guard destroys the prior instance during development reinjection; `pagehide` handles normal teardown.
 
-The responsive guest is an ordinary Plasmo tab page exposed only to the example's narrow host match. Plasmo's build chain is development-only; the example's production dependency audit remains clean.
+The responsive guest is an ordinary Plasmo tab page exposed only to the example's narrow host match. Plasmo's build chain is development-only; the example's production dependency audit remains clean. Because its legacy Parcel tree resolves differently across npm 10 platforms, nightly resolves the pinned manifest without rewriting the committed lock rather than claiming cross-platform `npm ci` reproducibility that upstream does not provide.
 
 ## Compatibility evidence
 

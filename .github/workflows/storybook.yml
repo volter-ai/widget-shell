@@ -49,8 +49,12 @@ jobs:
           mkdir -p "$RUNNER_TEMP/widget-shell-package"
           npm pack --pack-destination "$RUNNER_TEMP/widget-shell-package"
           echo "WIDGET_SHELL_TARBALL=$(find "$RUNNER_TEMP/widget-shell-package" -name '*.tgz' -print -quit)" >> "$GITHUB_ENV"
-      - run: npm ci --ignore-scripts
+      - if: matrix.framework == 'wxt'
+        run: npm ci --ignore-scripts
         working-directory: examples/${{ matrix.framework }}
+      - if: matrix.framework == 'plasmo'
+        run: npm install --ignore-scripts --package-lock=false
+        working-directory: examples/plasmo
       - name: Install Widget Shell as a consumer
         run: npm install --no-save --package-lock=false --ignore-scripts "$WIDGET_SHELL_TARBALL"
         working-directory: examples/${{ matrix.framework }}
