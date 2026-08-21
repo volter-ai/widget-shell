@@ -5,6 +5,7 @@
 ## 0.2.0 - 2026-08-21
 
 - Let an origin-validated iframe guest atomically update its own launcher metadata and subscribe to outer-shell visibility.
+- Accept the browser-reported ancestor origin when extension iframe referrers are intentionally omitted.
 
 ## 0.1.0 - 2026-08-21
 

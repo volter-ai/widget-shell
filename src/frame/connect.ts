@@ -27,12 +27,15 @@ interface PendingRequest {
 }
 
 function referrerOrigin(): string | undefined {
-  if (!document.referrer) return undefined;
-  try {
-    return new URL(document.referrer).origin;
-  } catch {
-    return undefined;
+  if (document.referrer) {
+    try {
+      return new URL(document.referrer).origin;
+    } catch {
+      // Extension frames can omit the referrer even when the browser exposes a trusted ancestor.
+    }
   }
+  const ancestor = window.location.ancestorOrigins?.item(0);
+  return ancestor || undefined;
 }
 
 export function connectOverlayApp(options: GuestBridgeOptions = {}): GuestBridge {
