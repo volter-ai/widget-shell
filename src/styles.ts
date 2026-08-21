@@ -179,15 +179,25 @@ export const SHELL_STYLES = `
     width: 54px;
     height: 54px;
     place-items: center;
-    border: 1px solid rgba(255,255,255,.22);
+    border: 1px solid transparent;
     border-radius: 16px;
-    color: white;
-    background: var(--ws-accent);
-    box-shadow: 0 8px 30px rgba(25, 25, 50, .25);
+    color: var(--ws-text);
+    background: transparent;
+    box-shadow: none;
     cursor: pointer;
   }
 
-  .ws-launcher:hover { filter: brightness(1.06); }
+  .ws-launcher:hover {
+    border-color: var(--ws-border);
+    background: color-mix(in srgb, var(--ws-surface) 82%, transparent);
+  }
+  :host([data-ws-accent="true"]) .ws-launcher {
+    border-color: rgba(255,255,255,.22);
+    color: white;
+    background: var(--ws-accent);
+    box-shadow: 0 8px 30px rgba(25, 25, 50, .25);
+  }
+  :host([data-ws-accent="true"]) .ws-launcher:hover { filter: brightness(1.06); }
   .ws-launcher:focus-visible,
   .ws-retry:focus-visible,
   .ws-drag-handle:focus-visible,

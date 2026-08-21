@@ -571,6 +571,7 @@ export function createOverlay(options: OverlayOptions): OverlayController {
 
       host = document.createElement("div");
       host.dataset.widgetShellId = options.id;
+      if (options.theme?.accent) host.dataset.wsAccent = "true";
       for (const [name, property] of Object.entries(THEME_PROPERTIES)) {
         const value = options.theme?.[name as keyof OverlayTheme];
         if (value) host.style.setProperty(property, value);

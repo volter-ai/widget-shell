@@ -49,7 +49,7 @@ const overlay = createOverlay({
 overlay.mount();
 ```
 
-The default preset gives the guest a stable `390 × 667` CSS-pixel viewport. It can be dragged, resized, snapped, and persisted while floating; smaller hosts progressively switch it into sheet and full-screen modes. See the [API guide](docs/api.md).
+The default preset gives the guest a stable `390 × 667` CSS-pixel viewport. Its collapsed launcher is transparent and unbranded; setting `theme.accent` opts into a filled treatment. It can be dragged, resized, snapped, and persisted while floating; smaller hosts progressively switch it into sheet and full-screen modes. See the [API guide](docs/api.md).
 
 ## Design principles
 
