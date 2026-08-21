@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.2.1 - 2026-08-21
+
+- Changed the unbranded default accent from purple to a neutral system blue; integrators can still replace it through the existing theme token.
+
 ## 0.2.0 - 2026-08-21
 
 - Let an origin-validated iframe guest atomically update its own launcher metadata and subscribe to outer-shell visibility.
