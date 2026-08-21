@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "description": "A production-grade overlay runtime for turning responsive web apps into polished widgets and browser extensions.",
   "type": "module",
+  "packageManager": "npm@11.12.1",
   "license": "MIT",
   "author": "Volter AI",
   "repository": {
@@ -72,6 +73,7 @@
     "esbuild": "^0.28.2",
     "lit": "^3.3.3",
     "publint": "^0.3.24",
+    "react": "^19.2.8",
     "storybook": "^10.5.10",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",
