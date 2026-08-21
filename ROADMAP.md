@@ -11,19 +11,19 @@ The roadmap is capability-oriented; dates are intentionally omitted.
 - Exact mount/unmount behavior
 - Storybook states and hostile-page fixtures
 - Raw WebExtension example
+- Position and size persistence
+- Drag, resize, snap, sheet, and full-screen transitions
+- Multiple-overlay arbitration
 
 ## 0.2 — integration breadth
 
 - WXT and Plasmo examples/adapters
 - Shadow DOM host mode
 - React and Preact adapters
-- Position and size persistence
-- Drag, resize, snap, sheet, and full-screen transitions
 
 ## 0.3 — application platform
 
 - Typed custom capabilities
-- Multiple-overlay arbitration
 - Pop-out and side-panel coordination
 - Extension project generator
 - Lucarne delivery adapter
@@ -37,4 +37,3 @@ The roadmap is capability-oriented; dates are intentionally omitted.
 - Maintainer and release-governance maturity
 
 The roadmap does not include building an extension bundler, application framework, backend, chat system, or arbitrary third-party website wrapper.
-

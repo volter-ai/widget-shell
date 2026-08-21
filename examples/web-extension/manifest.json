@@ -3,6 +3,7 @@
   "name": "Widget Shell example",
   "version": "0.0.0",
   "description": "A minimal extension-local application hosted by Widget Shell.",
+  "permissions": ["storage"],
   "content_scripts": [
     {
       "matches": ["https://example.com/*"],

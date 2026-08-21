@@ -14,11 +14,11 @@ Host page
 
 ## Core
 
-The core is a deterministic state machine and geometry model with no framework or browser-global dependency. It describes lifecycle, requested actions, placements, viewport presets, and recoverable failures.
+The core is a deterministic state machine and geometry model with no framework or browser-global dependency. It describes lifecycle, placements, viewport presets, host constraints, movement, resizing, snapping, responsive modes, and recoverable failures.
 
 ## Host
 
-The DOM host owns mount identity, isolation, frame creation, focus, keyboard behavior, collision constraints, persistence, animation, and exact cleanup. It must tolerate repeated mount and unmount calls.
+The DOM host owns mount identity, isolation, frame creation, focus, keyboard behavior, pointer interaction, persistence, global layer arbitration, animation, and exact cleanup. Storage is injected because ordinary embeds and extensions require different persistence backends.
 
 ## Guest
 
@@ -46,4 +46,3 @@ Messages have a versioned envelope, instance identifier, request identifier, exp
 - Reduced motion removes nonessential transitions
 - Teardown leaves no owned resources behind
 - Remote content never gains ambient extension authority
-

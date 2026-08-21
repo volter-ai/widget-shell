@@ -27,7 +27,7 @@ Widget Shell answers a different question: **how does an existing application be
 
 Widget Shell is in initial development. The public contracts are being designed before the first prerelease; do not depend on API stability until `0.1.0`.
 
-## Intended API
+## API
 
 ```ts
 import { createOverlay } from "@volter-ai-dev/widget-shell";
@@ -49,7 +49,7 @@ const overlay = createOverlay({
 overlay.mount();
 ```
 
-The initial preset gives the guest a stable `390 × 667` CSS-pixel viewport and fluidly constrains it on smaller hosts.
+The default preset gives the guest a stable `390 × 667` CSS-pixel viewport. It can be dragged, resized, snapped, and persisted while floating; smaller hosts progressively switch it into sheet and full-screen modes. See the [API guide](docs/api.md).
 
 ## Design principles
 
@@ -67,6 +67,8 @@ The initial preset gives the guest a stable `390 × 667` CSS-pixel viewport and 
 Widget Shell includes overlay lifecycle, geometry, iframe and Shadow DOM hosts, a guest bridge, default chrome, style tokens, and delivery adapters.
 
 It is not an extension build system, application framework, backend, chat framework, page-scraping toolkit, or universal wrapper for third-party websites. See [the product contract](docs/product.md) and [architecture](docs/architecture.md).
+
+The project also publishes an enforced [performance contract](docs/performance.md); the complete extension host currently ships at approximately 7 KiB gzip before the guest application.
 
 ## Contributing
 

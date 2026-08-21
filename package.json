@@ -52,11 +52,12 @@
     "lint": "biome check .",
     "format": "biome check --write .",
     "test": "vitest run",
-    "check": "npm run lint && npm run typecheck && npm run test && npm run build && npm run package:check && npm run example:build",
+    "check": "npm run lint && npm run typecheck && npm run test && npm run build && npm run package:check && npm run example:build && npm run size:check",
     "package:check": "publint",
     "storybook": "storybook dev -p 6006",
     "storybook:build": "storybook build --test --quiet",
     "example:build": "node scripts/build-extension.mjs",
+    "size:check": "node scripts/check-size.mjs",
     "prepack": "npm run build && npm run package:check"
   },
   "publishConfig": {

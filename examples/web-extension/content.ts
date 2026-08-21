@@ -1,6 +1,7 @@
 import { createOverlay } from "../../src";
 
 const extensionOrigin = new URL(chrome.runtime.getURL("/")).origin;
+const geometryKey = "widget-shell-example:geometry";
 
 createOverlay({
   id: "widget-shell-example",
@@ -17,5 +18,18 @@ createOverlay({
   capabilities: {
     "page.url.read": () => window.location.href,
     "selection.read": () => window.getSelection()?.toString() ?? "",
+  },
+  behavior: {
+    persistence: {
+      async load() {
+        return (await chrome.storage.local.get(geometryKey))[geometryKey];
+      },
+      async save(_id, geometry) {
+        await chrome.storage.local.set({ [geometryKey]: geometry });
+      },
+      async remove() {
+        await chrome.storage.local.remove(geometryKey);
+      },
+    },
   },
 }).mount();

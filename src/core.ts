@@ -21,3 +21,19 @@ export {
   isBridgeEnvelope,
   WIDGET_SHELL_PROTOCOL,
 } from "./core/protocol";
+export {
+  constrainGeometry,
+  DEFAULT_GEOMETRY_LIMITS,
+  DEFAULT_RESPONSIVE_BREAKPOINTS,
+  type GeometryLimits,
+  type HostSize,
+  initialGeometry,
+  isWindowGeometry,
+  moveGeometry,
+  type OverlayMode,
+  type ResponsiveBreakpoints,
+  resizeGeometry,
+  responsiveMode,
+  snapGeometry,
+  type WindowGeometry,
+} from "./core/window-geometry";
