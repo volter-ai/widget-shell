@@ -125,7 +125,15 @@ This preserves labeling, keyboard behavior, badges, geometry, and lifecycle even
 
 The move and resize handles support pointer input and arrow keys. Hold Shift for larger keyboard steps. They disappear in sheet and full-screen modes, where manual floating geometry is retained and restored when the host grows again.
 
-The controller exposes `geometry`, `mode`, `setGeometry()`, and `resetGeometry()` for host-level controls. Guest applications use `connectOverlayApp()` to request granted capabilities, close themselves, or update their launcher badge.
+The controller exposes `geometry`, `mode`, `setGeometry()`, and `resetGeometry()` for host-level controls. Guest applications use `connectOverlayApp()` to request granted capabilities, close themselves, publish launcher identity, or react to outer-shell visibility without inspecting their embedding DOM:
+
+```ts
+const shell = connectOverlayApp();
+shell.setLauncher({ label: "Open Acme", icon: iconDataUrl, badge: 2, hidden: false });
+const stopVisibility = shell.onVisibility((visible) => app.setActive(visible));
+```
+
+Launcher updates are confined to the guest's own source- and origin-validated overlay. Visibility is emitted only after the guest completes the bridge handshake.
 
 For an inline application that already owns its host protocol, pass `srcdoc` instead of `src` and set
 `ready: "load"`. Bridge readiness remains the default; load readiness must be selected explicitly.

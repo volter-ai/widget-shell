@@ -25,7 +25,7 @@ Widget Shell answers a different question: **how does an existing application be
 
 ## Status
 
-Widget Shell is in initial development. The public contracts are being designed before the first prerelease; do not depend on API stability until `0.1.0`.
+Widget Shell is in initial development. The `0.x` public contracts are usable but may evolve between minor releases; changes are documented in the changelog.
 
 ## API
 

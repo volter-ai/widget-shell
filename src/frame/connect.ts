@@ -10,6 +10,13 @@ export interface GuestBridge {
   request<T = unknown>(capability: string, payload?: unknown): Promise<T>;
   close(): void;
   setBadge(value: string | number | null): void;
+  setLauncher(value: {
+    readonly label?: string;
+    readonly icon?: string | null;
+    readonly hidden?: boolean;
+    readonly badge?: string | number | null;
+  }): void;
+  onVisibility(listener: (visible: boolean) => void): () => void;
   destroy(): void;
 }
 
@@ -40,7 +47,9 @@ export function connectOverlayApp(options: GuestBridgeOptions = {}): GuestBridge
   let instanceId: string | undefined;
   let parentOrigin: string | undefined;
   let sequence = 0;
+  let visible: boolean | undefined;
   const pending = new Map<string, PendingRequest>();
+  const visibilityListeners = new Set<(visible: boolean) => void>();
 
   function onMessage(event: MessageEvent): void {
     if (
@@ -54,6 +63,16 @@ export function connectOverlayApp(options: GuestBridgeOptions = {}): GuestBridge
       instanceId = event.data.instanceId;
       parentOrigin = event.origin;
       window.parent.postMessage(bridgeEnvelope(instanceId, "READY"), parentOrigin);
+      return;
+    }
+    if (
+      event.data.instanceId === instanceId &&
+      event.data.type === "EVENT" &&
+      event.data.capability === "shell.visibility" &&
+      typeof event.data.payload === "boolean"
+    ) {
+      visible = event.data.payload;
+      for (const listener of visibilityListeners) listener(visible);
       return;
     }
     if (
@@ -118,6 +137,14 @@ export function connectOverlayApp(options: GuestBridgeOptions = {}): GuestBridge
     setBadge(value) {
       sendEvent("launcher.badge.write", value);
     },
+    setLauncher(value) {
+      sendEvent("launcher.write", value);
+    },
+    onVisibility(listener) {
+      visibilityListeners.add(listener);
+      if (visible !== undefined) listener(visible);
+      return () => visibilityListeners.delete(listener);
+    },
     destroy() {
       window.removeEventListener("message", onMessage);
       document.removeEventListener("keydown", onKeydown);
@@ -126,6 +153,7 @@ export function connectOverlayApp(options: GuestBridgeOptions = {}): GuestBridge
         request.reject(new Error("Overlay bridge was destroyed"));
       }
       pending.clear();
+      visibilityListeners.clear();
     },
   };
 }
