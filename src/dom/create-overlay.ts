@@ -24,13 +24,23 @@ import { SHELL_STYLES } from "../styles";
 import { type GeometryPersistence, parsePersistedGeometry } from "./persistence";
 import { type OverlayRegistryHandle, registerOverlay } from "./registry";
 
-export interface IframeContent {
+interface IframeContentBase {
   readonly kind: "iframe";
-  readonly src: string;
   readonly title?: string;
   readonly allowedOrigin?: string;
   readonly sandbox?: readonly string[];
+  /**
+   * `bridge` waits for the Widget Shell frame protocol (the default). `load` is for embedded apps
+   * whose own transport already has a readiness protocol and only needs the browser load boundary.
+   */
+  readonly ready?: "bridge" | "load";
 }
+
+export type IframeContent = IframeContentBase &
+  (
+    | { readonly src: string; readonly srcdoc?: never }
+    | { readonly src?: never; readonly srcdoc: string }
+  );
 
 export interface LauncherRenderContext {
   readonly open: boolean;
@@ -43,6 +53,7 @@ export interface LauncherOptions {
   readonly closeLabel?: string;
   readonly icon?: string;
   readonly badge?: string | number;
+  readonly hidden?: boolean;
   readonly render?: (context: LauncherRenderContext) => Node;
 }
 
@@ -100,12 +111,19 @@ export interface OverlayController {
   readonly state: OverlayState;
   readonly geometry: WindowGeometry;
   readonly mode: OverlayMode;
+  /** The mounted content frame, once created. Read-only escape hatch for delivery adapters. */
+  readonly frame: HTMLIFrameElement | undefined;
   mount(): void;
   open(): void;
   close(): void;
   toggle(): void;
   retry(): void;
   setBadge(value: string | number | null): void;
+  setLauncher(value: {
+    readonly label?: string;
+    readonly icon?: string | null;
+    readonly hidden?: boolean;
+  }): void;
   setGeometry(value: WindowGeometry): void;
   resetGeometry(): void;
   subscribe(listener: (state: OverlayState) => void): () => void;
@@ -136,6 +154,12 @@ const THEME_PROPERTIES = {
 
 function expectedOrigin(content: IframeContent): string {
   if (content.allowedOrigin) return content.allowedOrigin;
+  if (content.srcdoc !== undefined) {
+    if (content.sandbox && !content.sandbox.includes("allow-same-origin")) {
+      throw new Error("Sandboxed srcdoc with an opaque origin requires an explicit allowedOrigin");
+    }
+    return window.location.origin;
+  }
   const origin = new URL(content.src, document.baseURI).origin;
   if (origin === "null") throw new Error("Opaque iframe origins require an explicit allowedOrigin");
   return origin;
@@ -143,6 +167,14 @@ function expectedOrigin(content: IframeContent): string {
 
 function hostSize(): { width: number; height: number } {
   return { width: window.innerWidth, height: window.innerHeight };
+}
+
+function deepestActiveElement(): Element | null {
+  let active: Element | null = document.activeElement;
+  while (active instanceof HTMLElement && active.shadowRoot?.activeElement) {
+    active = active.shadowRoot.activeElement;
+  }
+  return active;
 }
 
 export function createOverlay(options: OverlayOptions): OverlayController {
@@ -161,8 +193,9 @@ export function createOverlay(options: OverlayOptions): OverlayController {
     ...options.behavior?.breakpoints,
   };
   const origin = expectedOrigin(options.content);
-  const closeLabel =
-    options.launcher.closeLabel ?? options.launcher.label.replace(/^Open\s+/i, "Close ");
+  let launcherLabel = options.launcher.label;
+  let launcherIcon = options.launcher.icon;
+  let closeLabel = options.launcher.closeLabel ?? launcherLabel.replace(/^Open\s+/i, "Close ");
   let state: OverlayState = INITIAL_OVERLAY_STATE;
   let geometry = initialGeometry(viewport, hostSize(), placement, limits);
   let mode = responsiveMode(hostSize(), breakpoints);
@@ -172,6 +205,7 @@ export function createOverlay(options: OverlayOptions): OverlayController {
   let panel: HTMLDivElement | undefined;
   let frame: HTMLIFrameElement | undefined;
   let launcher: HTMLButtonElement | undefined;
+  let launcherWrap: HTMLDivElement | undefined;
   let loadingElement: HTMLDivElement | undefined;
   let errorElement: HTMLDivElement | undefined;
   let badgeElement: HTMLSpanElement | undefined;
@@ -242,18 +276,16 @@ export function createOverlay(options: OverlayOptions): OverlayController {
   function renderLauncher(open: boolean): void {
     if (!launcher || renderedLauncherOpen === open) return;
     renderedLauncherOpen = open;
-    const label = open ? closeLabel : options.launcher.label;
+    const label = open ? closeLabel : launcherLabel;
     launcher.title = label;
     launcher.setAttribute("aria-label", label);
     if (options.launcher.render) {
-      launcher.replaceChildren(
-        options.launcher.render({ open, label, icon: options.launcher.icon }),
-      );
+      launcher.replaceChildren(options.launcher.render({ open, label, icon: launcherIcon }));
     } else if (open) {
       launcher.innerHTML = CLOSE_ICON;
-    } else if (options.launcher.icon) {
+    } else if (launcherIcon) {
       const icon = document.createElement("img");
-      icon.src = options.launcher.icon;
+      icon.src = launcherIcon;
       icon.alt = "";
       launcher.replaceChildren(icon);
     } else {
@@ -303,10 +335,16 @@ export function createOverlay(options: OverlayOptions): OverlayController {
     frame = document.createElement("iframe");
     frame.className = "ws-frame";
     frame.title = options.content.title ?? options.launcher.label;
-    frame.src = options.content.src;
+    if (options.content.srcdoc !== undefined) frame.srcdoc = options.content.srcdoc;
+    else frame.src = options.content.src;
     frame.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
     if (options.content.sandbox) frame.setAttribute("sandbox", options.content.sandbox.join(" "));
     frame.addEventListener("load", () => {
+      if (options.content.ready === "load") {
+        if (timeout) clearTimeout(timeout);
+        dispatch({ type: "GUEST_READY" });
+        return;
+      }
       frame?.contentWindow?.postMessage(bridgeEnvelope(options.id, "INIT"), origin);
     });
     panel.querySelector(".ws-window")?.prepend(frame);
@@ -475,6 +513,9 @@ export function createOverlay(options: OverlayOptions): OverlayController {
     get mode() {
       return mode;
     },
+    get frame() {
+      return frame;
+    },
     mount() {
       if (destroyed) throw new Error("A destroyed overlay cannot be mounted again");
       if (host?.isConnected) return;
@@ -545,8 +586,9 @@ export function createOverlay(options: OverlayOptions): OverlayController {
       announcer.setAttribute("aria-live", "polite");
       panel.append(windowElement, dragHandle, resizeHandle, announcer);
 
-      const launcherWrap = document.createElement("div");
+      launcherWrap = document.createElement("div");
       launcherWrap.className = "ws-launcher-wrap";
+      launcherWrap.hidden = options.launcher.hidden ?? false;
       launcher = document.createElement("button");
       launcher.type = "button";
       launcher.className = "ws-launcher";
@@ -579,6 +621,7 @@ export function createOverlay(options: OverlayOptions): OverlayController {
         anchor = undefined;
         panel = undefined;
         launcher = undefined;
+        launcherWrap = undefined;
         loadingElement = undefined;
         errorElement = undefined;
         badgeElement = undefined;
@@ -602,7 +645,7 @@ export function createOverlay(options: OverlayOptions): OverlayController {
     open() {
       if (state.phase === "unmounted") controller.mount();
       if (state.phase !== "closed" && state.phase !== "error") return;
-      previousFocus = document.activeElement;
+      previousFocus = deepestActiveElement();
       registry?.activate(options.behavior?.coordination !== "independent");
       dispatch({ type: "OPEN" });
       ensureFrame();
@@ -632,6 +675,28 @@ export function createOverlay(options: OverlayOptions): OverlayController {
       const empty = value === null || value === "" || value === 0;
       badgeElement.hidden = empty;
       badgeElement.textContent = empty ? "" : String(value);
+    },
+    setLauncher(value) {
+      let rerender = false;
+      if (value.label !== undefined) {
+        if (!value.label.trim()) throw new Error("Launcher label is required");
+        if (value.label !== launcherLabel) {
+          launcherLabel = value.label;
+          rerender = true;
+          if (!options.launcher.closeLabel) {
+            closeLabel = launcherLabel.replace(/^Open\s+/i, "Close ");
+          }
+        }
+      }
+      if (value.icon !== undefined && value.icon !== launcherIcon) {
+        launcherIcon = value.icon ?? undefined;
+        rerender = true;
+      }
+      if (value.hidden !== undefined && launcherWrap) launcherWrap.hidden = value.hidden;
+      if (rerender) {
+        renderedLauncherOpen = undefined;
+        renderLauncher(state.phase !== "closed" && state.phase !== "unmounted");
+      }
     },
     setGeometry(value) {
       geometryRevision += 1;
@@ -673,6 +738,7 @@ export function createOverlay(options: OverlayOptions): OverlayController {
       panel = undefined;
       frame = undefined;
       launcher = undefined;
+      launcherWrap = undefined;
       loadingElement = undefined;
       errorElement = undefined;
       badgeElement = undefined;

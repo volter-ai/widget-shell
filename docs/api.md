@@ -1,13 +1,36 @@
 # API guide
 
-Widget Shell currently publishes four tree-shakeable entry points:
+Widget Shell currently publishes five tree-shakeable entry points:
 
 - `@volter-ai-dev/widget-shell` — the complete DOM host and all core exports
 - `@volter-ai-dev/widget-shell/core` — framework- and browser-global-free state, geometry, and protocol primitives
 - `@volter-ai-dev/widget-shell/frame` — the guest-side bridge
 - `@volter-ai-dev/widget-shell/web-extension` — validated extension-origin and storage adapters
+- `@volter-ai-dev/widget-shell/lucarne` — a serialized delivery adapter for Lucarne-controlled browsers
 
 APIs may change before `0.1.0`.
+
+## Lucarne adapter
+
+Lucarne owns the browser session, durable injection, state envelope, and intent queues. Widget Shell
+owns only the launcher, stable viewport, responsive geometry, and visual lifecycle:
+
+```ts
+import { createLucarneInjector } from "@volter-ai-dev/widget-shell/lucarne";
+import { WidgetHost } from "lucarne/widget/host";
+
+const injector = createLucarneInjector({
+  launcherLabel: "Open Acme",
+  launcherIcon: iconDataUrl,
+  viewport: { width: 390, height: 667 },
+});
+
+await WidgetHost.attach(session, { ns: "acme", html, injector });
+```
+
+The guest uses Lucarne's transport-only runtime, so the app is rendered once inside Widget Shell's
+viewport rather than nesting Lucarne's legacy pill/panel chrome inside another overlay. The adapter
+preloads the guest because Lucarne must be able to deliver live patches while the overlay is closed.
 
 ## WebExtension adapter
 
@@ -103,3 +126,6 @@ This preserves labeling, keyboard behavior, badges, geometry, and lifecycle even
 The move and resize handles support pointer input and arrow keys. Hold Shift for larger keyboard steps. They disappear in sheet and full-screen modes, where manual floating geometry is retained and restored when the host grows again.
 
 The controller exposes `geometry`, `mode`, `setGeometry()`, and `resetGeometry()` for host-level controls. Guest applications use `connectOverlayApp()` to request granted capabilities, close themselves, or update their launcher badge.
+
+For an inline application that already owns its host protocol, pass `srcdoc` instead of `src` and set
+`ready: "load"`. Bridge readiness remains the default; load readiness must be selected explicitly.
