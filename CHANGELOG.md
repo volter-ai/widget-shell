@@ -1,9 +1,8 @@
 # Changelog
 
-Notable changes will be documented here once the first prerelease is published. Releases follow [Semantic Versioning](https://semver.org/) and include migration notes for breaking public API changes.
-
 ## Unreleased
 
+- Let an origin-validated iframe guest atomically update its own launcher metadata and subscribe to outer-shell visibility.
 - Established the framework-free lifecycle, geometry, and bridge protocol.
 - Added the isolated iframe host, default mobile shell, and guest SDK.
 - Added pointer and keyboard movement, resizing, edge snapping, responsive sheet/full-screen modes, and validated async geometry persistence.

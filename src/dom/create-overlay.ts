@@ -219,6 +219,8 @@ export function createOverlay(options: OverlayOptions): OverlayController {
   let destroyed = false;
   let renderedLauncherOpen: boolean | undefined;
   let renderedError: string | undefined;
+  let guestReady = false;
+  let lastGuestVisibility: boolean | undefined;
   const listeners = new Set<(next: OverlayState) => void>();
 
   function reportError(error: unknown): void {
@@ -364,6 +366,16 @@ export function createOverlay(options: OverlayOptions): OverlayController {
     errorElement.hidden = state.phase !== "error";
     renderError();
     applyGeometry();
+    if (guestReady && frame?.contentWindow && lastGuestVisibility !== visible) {
+      lastGuestVisibility = visible;
+      frame.contentWindow.postMessage(
+        bridgeEnvelope(options.id, "EVENT", {
+          capability: "shell.visibility",
+          payload: visible,
+        }),
+        origin,
+      );
+    }
   }
 
   async function onMessage(event: MessageEvent): Promise<void> {
@@ -372,6 +384,7 @@ export function createOverlay(options: OverlayOptions): OverlayController {
 
     if (event.data.type === "READY") {
       if (timeout) clearTimeout(timeout);
+      guestReady = true;
       dispatch({ type: "GUEST_READY" });
       return;
     }
@@ -384,6 +397,38 @@ export function createOverlay(options: OverlayOptions): OverlayController {
       if (value === null || typeof value === "string" || typeof value === "number") {
         controller.setBadge(value);
       }
+      return;
+    }
+    if (event.data.type === "EVENT" && event.data.capability === "launcher.write") {
+      const value = event.data.payload;
+      if (typeof value !== "object" || value === null || Array.isArray(value)) return;
+      const candidate = value as Record<string, unknown>;
+      const label = candidate.label;
+      const icon = candidate.icon;
+      const hidden = candidate.hidden;
+      const badge = candidate.badge;
+      if (
+        (label !== undefined &&
+          (typeof label !== "string" || !label.trim() || label.length > 200)) ||
+        (icon !== undefined &&
+          icon !== null &&
+          (typeof icon !== "string" || !icon.startsWith("data:image/") || icon.length > 200_000)) ||
+        (hidden !== undefined && typeof hidden !== "boolean") ||
+        (badge !== undefined &&
+          badge !== null &&
+          typeof badge !== "string" &&
+          typeof badge !== "number") ||
+        (typeof badge === "string" && badge.length > 20) ||
+        (typeof badge === "number" && !Number.isFinite(badge))
+      ) {
+        return;
+      }
+      controller.setLauncher({
+        ...(typeof label === "string" ? { label } : {}),
+        ...(icon === null || typeof icon === "string" ? { icon } : {}),
+        ...(typeof hidden === "boolean" ? { hidden } : {}),
+      });
+      if (badge !== undefined) controller.setBadge(badge as string | number | null);
       return;
     }
     if (event.data.type !== "REQUEST" || !event.data.requestId || !event.data.capability) return;
@@ -665,6 +710,8 @@ export function createOverlay(options: OverlayOptions): OverlayController {
       if (state.phase !== "error") return;
       frame?.remove();
       frame = undefined;
+      guestReady = false;
+      lastGuestVisibility = undefined;
       renderedError = undefined;
       dispatch({ type: "RETRY" });
       ensureFrame();
