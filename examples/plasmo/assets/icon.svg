@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
   <title>Widget Shell example</title>
-  <rect width="128" height="128" rx="28" fill="#2563eb"/>
+  <rect width="128" height="128" rx="28" fill="#17171c"/>
   <rect x="28" y="24" width="72" height="80" rx="18" fill="#fff"/>
-  <path d="M44 48h40M44 64h40M44 80h24" fill="none" stroke="#2563eb" stroke-linecap="round" stroke-width="9"/>
+  <path d="M44 48h40M44 64h40M44 80h24" fill="none" stroke="#17171c" stroke-linecap="round" stroke-width="9"/>
 </svg>
