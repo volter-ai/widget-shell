@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.2.2 - 2026-08-21
+
+- Made the unbranded default monochrome rather than assigning it a product color; integrators can still opt into any accent through the existing theme token.
+
 ## 0.2.1 - 2026-08-21
 
 - Changed the unbranded default accent from purple to a neutral system blue; integrators can still replace it through the existing theme token.

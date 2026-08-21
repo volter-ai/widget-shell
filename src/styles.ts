@@ -1,6 +1,6 @@
 export const SHELL_STYLES = `
   :host {
-    --ws-accent: #2563eb;
+    --ws-accent: #17171c;
     --ws-surface: #ffffff;
     --ws-surface-muted: #f4f4f7;
     --ws-text: #17171c;
