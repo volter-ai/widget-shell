@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Overlay example</title>
+    <style>
+      body { margin: 0; padding: 24px; color: #1d1e28; background: #f7f7fa; font: 15px/1.5 system-ui, sans-serif; }
+      button { padding: 10px 14px; border: 0; border-radius: 10px; color: white; background: #5757d9; font: inherit; cursor: pointer; }
+      output { display: block; margin-top: 18px; overflow-wrap: anywhere; color: #5f6070; }
+    </style>
+  </head>
+  <body>
+    <h1>Extension-local app</h1>
+    <p>This ordinary responsive page receives only capabilities granted by the host.</p>
+    <button type="button">Read current page URL</button>
+    <output aria-live="polite"></output>
+    <script src="app.js"></script>
+  </body>
+</html>
+

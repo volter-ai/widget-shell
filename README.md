@@ -3,6 +3,7 @@
 [![CI](https://github.com/volter-ai/widget-shell/actions/workflows/ci.yml/badge.svg)](https://github.com/volter-ai/widget-shell/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D22-339933?logo=nodedotjs)](package.json)
+[![Storybook](https://img.shields.io/badge/Storybook-live-ff4785?logo=storybook&logoColor=white)](https://volter-ai.github.io/widget-shell/)
 
 **The application runtime for overlays.** Turn an existing responsive web app into a polished in-page widget or browser extension without rebuilding the app.
 
@@ -71,6 +72,8 @@ It is not an extension build system, application framework, backend, chat framew
 
 We welcome bug reports, design feedback, documentation fixes, adapters, and focused implementation contributions. Start with [CONTRIBUTING.md](CONTRIBUTING.md). Security issues must follow [SECURITY.md](SECURITY.md), not the public issue tracker.
 
+Explore every supported visual state in the [live Storybook](https://volter-ai.github.io/widget-shell/).
+
 ## Community
 
 - [Support and questions](SUPPORT.md)
@@ -81,4 +84,3 @@ We welcome bug reports, design feedback, documentation fixes, adapters, and focu
 ## License
 
 [MIT](LICENSE) © Volter AI.
-

@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "Widget Shell example",
+  "version": "0.0.0",
+  "description": "A minimal extension-local application hosted by Widget Shell.",
+  "content_scripts": [
+    {
+      "matches": ["https://example.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["app.html", "app.js"],
+      "matches": ["https://example.com/*"]
+    }
+  ]
+}

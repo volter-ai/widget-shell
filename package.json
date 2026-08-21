@@ -1,0 +1,81 @@
+{
+  "name": "@volter-ai-dev/widget-shell",
+  "version": "0.0.0",
+  "description": "A production-grade overlay runtime for turning responsive web apps into polished widgets and browser extensions.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Volter AI",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/volter-ai/widget-shell.git"
+  },
+  "homepage": "https://github.com/volter-ai/widget-shell#readme",
+  "bugs": {
+    "url": "https://github.com/volter-ai/widget-shell/issues"
+  },
+  "keywords": [
+    "browser-extension",
+    "iframe",
+    "overlay",
+    "widget",
+    "webextension"
+  ],
+  "engines": {
+    "node": "^22.12.0 || >=24.0.0"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./core": {
+      "types": "./dist/core.d.ts",
+      "import": "./dist/core.js"
+    },
+    "./frame": {
+      "types": "./dist/frame.d.ts",
+      "import": "./dist/frame.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "clean": "tsup --clean",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check .",
+    "format": "biome check --write .",
+    "test": "vitest run",
+    "check": "npm run lint && npm run typecheck && npm run test && npm run build && npm run package:check && npm run example:build",
+    "package:check": "publint",
+    "storybook": "storybook dev -p 6006",
+    "storybook:build": "storybook build --test --quiet",
+    "example:build": "node scripts/build-extension.mjs",
+    "prepack": "npm run build && npm run package:check"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "overrides": {
+    "esbuild": "^0.28.2"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.9",
+    "@storybook/addon-a11y": "^10.5.10",
+    "@storybook/web-components-vite": "^10.5.10",
+    "esbuild": "^0.28.2",
+    "lit": "^3.3.3",
+    "publint": "^0.3.24",
+    "storybook": "^10.5.10",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "vite": "^8.2.2",
+    "vitest": "^4.1.11"
+  }
+}

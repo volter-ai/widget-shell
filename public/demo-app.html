@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Example application</title>
+    <style>
+      * { box-sizing: border-box; }
+      body { margin: 0; color: #1f2030; background: #f8f8fb; font: 14px/1.45 system-ui, sans-serif; }
+      header { display: flex; align-items: center; gap: 11px; height: 58px; padding: 0 17px; border-bottom: 1px solid #e3e3eb; background: white; }
+      .mark { width: 30px; height: 30px; border-radius: 9px; background: #5757d9; }
+      header strong { display: block; font-size: 14px; }
+      header span { color: #717180; font-size: 12px; }
+      main { padding: 18px 16px 84px; }
+      h1 { margin: 2px 0 6px; font-size: 23px; letter-spacing: -.025em; }
+      p { margin: 0; color: #696978; }
+      .card { margin-top: 18px; padding: 16px; border: 1px solid #e0e0e8; border-radius: 14px; background: white; box-shadow: 0 2px 8px rgba(30,30,50,.04); }
+      .card b { display: block; margin-bottom: 5px; }
+      nav { position: fixed; inset: auto 0 0; display: grid; grid-template-columns: repeat(3,1fr); height: 66px; border-top: 1px solid #e3e3eb; background: rgba(255,255,255,.94); backdrop-filter: blur(10px); }
+      nav button { border: 0; color: #686878; background: transparent; font: inherit; }
+      nav button:first-child { color: #4c4cc8; font-weight: 700; }
+    </style>
+  </head>
+  <body>
+    <header><span class="mark"></span><div><strong>Example app</strong><span>Responsive guest</span></div></header>
+    <main>
+      <h1>Your existing app, over any workflow.</h1>
+      <p>This is an ordinary responsive document inside Widget Shell's stable mobile viewport.</p>
+      <section class="card"><b>One application</b>Use the same guest in an extension, site embed, side panel, or controlled browser.</section>
+      <section class="card"><b>Explicit capabilities</b>The host decides exactly which page information and actions this guest can access.</section>
+      <section class="card"><b>Independent design</b>The guest owns its routes, authentication, data, and interface.</section>
+    </main>
+    <nav>
+      <button type="button">Home</button><button type="button">Activity</button
+      ><button type="button">Settings</button>
+    </nav>
+    <script>
+      let host;
+      addEventListener("message", (event) => {
+        const message = event.data;
+        if (message?.protocol !== "widget-shell/v1" || message.type !== "INIT") return;
+        host = { source: event.source, origin: event.origin, instanceId: message.instanceId };
+        event.source.postMessage(
+          { protocol: message.protocol, instanceId: message.instanceId, type: "READY" },
+          event.origin,
+        );
+      });
+      addEventListener("keydown", (event) => {
+        if (event.key !== "Escape" || !host) return;
+        host.source.postMessage(
+          {
+            protocol: "widget-shell/v1",
+            instanceId: host.instanceId,
+            type: "EVENT",
+            capability: "shell.close",
+          },
+          host.origin,
+        );
+      });
+    </script>
+  </body>
+</html>
