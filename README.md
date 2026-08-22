@@ -51,12 +51,14 @@ overlay.mount();
 
 The default preset gives the guest a stable `390 × 667` CSS-pixel viewport. Its collapsed launcher is transparent and unbranded; setting `theme.accent` opts into a filled treatment. It can be dragged, resized, snapped, and persisted while floating; smaller hosts progressively switch it into sheet and full-screen modes. See the [API guide](docs/api.md).
 
+Applications that need more than a responsive phone can declare presentation policies. Physical footprint and logical guest viewport are independent: a guest can explicitly request a bounded content-fit surface, or keep a real `390 × 844` layout viewport while the shell scales it into a smaller footprint. Named states let one application move between peek, panel, simulated-device, sheet, and full-screen presentations without receiving arbitrary page authority.
+
 ## Design principles
 
 1. **Bring your own app.** The guest owns its routing, authentication, data, and application state.
 2. **Safe by default.** iframe isolation, strict origins, narrow capabilities, and no evaluated remote code.
 3. **Progressive adoption.** Use the finished shell, a framework adapter, or only the framework-free primitives.
-4. **Stable responsive geometry.** The guest receives an application viewport, not content-height jitter.
+4. **Stable, explicit geometry.** Responsive viewports stay stable; content fitting and virtual scaling happen only through declared presentation policies.
 5. **Exact cleanup.** Unmounting restores the host page without leaked nodes, listeners, observers, timers, or URLs.
 6. **Fast while closed.** The collapsed launcher is tiny and the guest is lazy by default.
 7. **Accessible as infrastructure.** Focus, keyboard, motion, contrast, labels, and reading order are core behavior.

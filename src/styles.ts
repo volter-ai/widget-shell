@@ -69,12 +69,44 @@ export const SHELL_STYLES = `
     box-shadow: var(--ws-shadow);
   }
 
+  .ws-window[data-viewport-overflow="scroll"] { overflow: auto; }
+
+  .ws-viewport {
+    position: absolute;
+    inset: 0;
+  }
+
+  .ws-viewport[data-mode="virtual"] {
+    top: 50%;
+    left: 50%;
+    width: var(--ws-rendered-width);
+    height: var(--ws-rendered-height);
+    transform: translate(-50%, -50%);
+  }
+
+  .ws-viewport[data-mode="virtual"][data-overflow="scroll"] {
+    position: relative;
+    top: auto;
+    left: auto;
+    min-width: var(--ws-rendered-width);
+    min-height: var(--ws-rendered-height);
+    margin: auto;
+    transform: none;
+  }
+
   .ws-frame {
     display: block;
     width: 100%;
     height: 100%;
     border: 0;
     background: var(--ws-surface);
+  }
+
+  .ws-viewport[data-mode="virtual"] .ws-frame {
+    width: var(--ws-logical-width);
+    height: var(--ws-logical-height);
+    transform: scale(var(--ws-display-scale));
+    transform-origin: top left;
   }
 
   .ws-loading,

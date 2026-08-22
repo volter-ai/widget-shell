@@ -1,4 +1,4 @@
-import type { OverlayPlacement } from "./core";
+import type { OverlayPlacement, OverlayPresentation } from "./core";
 
 declare const __LUCARNE_RUNTIME_SOURCE__: string;
 
@@ -20,6 +20,9 @@ export interface LucarneDeliveryOptions {
     readonly gutter?: number;
   };
   readonly placement?: OverlayPlacement;
+  readonly presentation?: OverlayPresentation;
+  readonly presentations?: Readonly<Record<string, OverlayPresentation>>;
+  readonly initialPresentation?: string;
   readonly theme?: {
     readonly accent?: string;
     readonly radius?: string;
@@ -43,34 +46,44 @@ function revision(value: string): string {
  */
 export function createLucarneInjector(options: LucarneDeliveryOptions): LucarneInjector {
   if (!options.launcherLabel.trim()) throw new Error("Lucarne launcherLabel is required");
+  if (options.presentation && options.presentations) {
+    throw new Error("Use either presentation or presentations, not both");
+  }
+  if (options.initialPresentation && !options.presentations) {
+    throw new Error("initialPresentation requires named presentations");
+  }
 
   return ({ ns, html }) => {
     const prefix = `__lw_${ns}`;
     const overlayId = options.id ?? `lucarne-${ns}`;
+    const overlay = {
+      id: overlayId,
+      title: options.title ?? options.launcherLabel,
+      launcherLabel: options.launcherLabel,
+      ...(options.launcherIcon ? { launcherIcon: options.launcherIcon } : {}),
+      launcherHidden: options.launcherHidden ?? false,
+      initiallyOpen: options.initiallyOpen ?? false,
+      width: options.viewport?.width ?? 390,
+      height: options.viewport?.height ?? 667,
+      gutter: options.viewport?.gutter ?? 16,
+      placement: options.placement ?? "bottom-end",
+      ...(options.presentation ? { presentation: options.presentation } : {}),
+      ...(options.presentations ? { presentations: options.presentations } : {}),
+      ...(options.initialPresentation ? { initialPresentation: options.initialPresentation } : {}),
+      ...(options.theme?.accent ? { accent: options.theme.accent } : {}),
+      ...(options.theme?.radius ? { radius: options.theme.radius } : {}),
+    };
     const bootstrap = {
       ns,
       html,
-      revision: revision(html),
+      revision: revision(JSON.stringify({ html, overlay })),
       hostId: `${prefix}_host`,
       iframeGlobal: `${prefix}_iframe`,
       guardGlobal: `${prefix}_guard`,
       disposeGlobal: `${prefix}_dispose`,
       chromeKey: prefix,
       intentQueuePrefix: `${prefix}_intent_`,
-      overlay: {
-        id: overlayId,
-        title: options.title ?? options.launcherLabel,
-        launcherLabel: options.launcherLabel,
-        ...(options.launcherIcon ? { launcherIcon: options.launcherIcon } : {}),
-        launcherHidden: options.launcherHidden ?? false,
-        initiallyOpen: options.initiallyOpen ?? false,
-        width: options.viewport?.width ?? 390,
-        height: options.viewport?.height ?? 667,
-        gutter: options.viewport?.gutter ?? 16,
-        placement: options.placement ?? "bottom-end",
-        ...(options.theme?.accent ? { accent: options.theme.accent } : {}),
-        ...(options.theme?.radius ? { radius: options.theme.radius } : {}),
-      },
+      overlay,
     };
     return `(function(){window.__widgetShellLucarneBootstrap__=${JSON.stringify(bootstrap)};${__LUCARNE_RUNTIME_SOURCE__}})()`;
   };

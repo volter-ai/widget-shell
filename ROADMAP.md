@@ -23,6 +23,8 @@ The roadmap is capability-oriented; dates are intentionally omitted.
 
 ## 0.3 — application platform
 
+- Responsive, content-fit, and virtual-viewport presentation policies *(implemented)*
+- Named presentation states and resolved geometry observability *(implemented)*
 - Typed custom capabilities
 - Pop-out and side-panel coordination
 - Extension project generator

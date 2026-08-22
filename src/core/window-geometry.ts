@@ -126,6 +126,28 @@ export function resizeGeometry(
   );
 }
 
+/** Resize an application-driven surface without making its configured corner visibly jump. */
+export function resizeAnchoredGeometry(
+  start: WindowGeometry,
+  size: HostSize,
+  host: HostSize,
+  placement: OverlayPlacement,
+  limits: GeometryLimits = DEFAULT_GEOMETRY_LIMITS,
+): WindowGeometry {
+  const end = placement.endsWith("end");
+  const bottom = placement.startsWith("bottom");
+  return constrainGeometry(
+    {
+      x: end ? start.x + start.width - size.width : start.x,
+      y: bottom ? start.y + start.height - size.height : start.y,
+      width: size.width,
+      height: size.height,
+    },
+    host,
+    limits,
+  );
+}
+
 export function snapGeometry(
   geometry: WindowGeometry,
   host: HostSize,

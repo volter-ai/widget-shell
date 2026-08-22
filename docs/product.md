@@ -18,6 +18,8 @@ The same guest application can appear as a floating phone, compact messenger, an
 
 `mobile-sm` is the default floating viewport: `390 × 667` CSS pixels, constrained by the available host viewport. A smaller host progressively turns the floating window into a sheet and then a full-screen surface.
 
+Presentation policies optionally separate the physical shell footprint from the guest's logical viewport. Responsive guests follow the available footprint; content-fit guests report deliberate bounded measurements; virtual guests retain an exact logical viewport that is visibly scaled or scrolled. The shell resolves every request under host, accessibility, and user constraints and reports that resolution to both sides.
+
 ## Owned-app boundary
 
 “Bring any app” means any application the integrator is authorized to embed and that can support the selected delivery mode. Widget Shell does not bypass `frame-ancestors`, `X-Frame-Options`, authentication partitioning, browser permissions, or extension-store policy.
@@ -28,7 +30,7 @@ Privileged extension logic is bundled. Remotely hosted content remains ordinary 
 
 Widget Shell combines capabilities that exist only separately elsewhere:
 
-- a stable responsive application viewport rather than content-height resizing;
+- stable responsive geometry plus explicit, bounded content fitting and virtual viewports;
 - a complete launcher and overlay-window lifecycle rather than mount-only injection;
 - iframe isolation plus a narrow capability bridge rather than direct ambient page access;
 - interchangeable extension, embed, and browser-control delivery adapters;
@@ -37,4 +39,3 @@ Widget Shell combines capabilities that exist only separately elsewhere:
 ## Success criteria
 
 An unrelated team can wrap its existing mobile web app, create a branded overlay extension in an afternoon, and encounter no assumptions about Volter products. An expert team can replace every visual surface while retaining the behavioral invariants.
-
