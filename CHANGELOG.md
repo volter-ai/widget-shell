@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 0.3.0 - 2026-08-22
+
+- Added framework-free presentation policies that separate physical footprint from responsive or virtual guest viewports.
+- Added bounded content-fit negotiation, named guest-selectable presentation states, minimum readable scale fallback, and observable resolved presentation snapshots.
+- Passed presentation policies through the Lucarne adapter and made its replacement identity include shell configuration as well as guest HTML.
+- Added a Storybook Geometry Lab for responsive, content-fit, virtual, constrained-scale, and guest-selected states.
+
 ## 0.2.3 - 2026-08-21
 
 - Made the collapsed launcher transparent by default; setting `theme.accent` still opts into the filled treatment.

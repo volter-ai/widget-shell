@@ -1,3 +1,8 @@
+import {
+  isPresentationSnapshot,
+  type PresentationSize,
+  type PresentationSnapshot,
+} from "../core/presentation";
 import { bridgeEnvelope, isBridgeEnvelope } from "../core/protocol";
 
 export interface GuestBridgeOptions {
@@ -16,6 +21,9 @@ export interface GuestBridge {
     readonly hidden?: boolean;
     readonly badge?: string | number | null;
   }): void;
+  requestPresentation(name: string): Promise<PresentationSnapshot>;
+  reportContentSize(size: PresentationSize): Promise<PresentationSnapshot>;
+  onPresentation(listener: (snapshot: PresentationSnapshot) => void): () => void;
   onVisibility(listener: (visible: boolean) => void): () => void;
   destroy(): void;
 }
@@ -51,8 +59,10 @@ export function connectOverlayApp(options: GuestBridgeOptions = {}): GuestBridge
   let parentOrigin: string | undefined;
   let sequence = 0;
   let visible: boolean | undefined;
+  let presentation: PresentationSnapshot | undefined;
   const pending = new Map<string, PendingRequest>();
   const visibilityListeners = new Set<(visible: boolean) => void>();
+  const presentationListeners = new Set<(snapshot: PresentationSnapshot) => void>();
 
   function onMessage(event: MessageEvent): void {
     if (
@@ -79,6 +89,16 @@ export function connectOverlayApp(options: GuestBridgeOptions = {}): GuestBridge
       return;
     }
     if (
+      event.data.instanceId === instanceId &&
+      event.data.type === "EVENT" &&
+      event.data.capability === "shell.presentation" &&
+      isPresentationSnapshot(event.data.payload)
+    ) {
+      presentation = event.data.payload;
+      for (const listener of presentationListeners) listener(presentation);
+      return;
+    }
+    if (
       event.data.instanceId !== instanceId ||
       event.data.type !== "RESPONSE" ||
       !event.data.requestId
@@ -101,6 +121,30 @@ export function connectOverlayApp(options: GuestBridgeOptions = {}): GuestBridge
     );
   }
 
+  function requestCapability<T>(capability: string, payload?: unknown): Promise<T> {
+    if (!instanceId || !parentOrigin) {
+      return Promise.reject(new Error("Overlay host is not ready"));
+    }
+    const activeInstanceId = instanceId;
+    const activeParentOrigin = parentOrigin;
+    const requestId = `${activeInstanceId}:${++sequence}`;
+    return new Promise<T>((resolve, reject) => {
+      const timeout = setTimeout(() => {
+        pending.delete(requestId);
+        reject(new Error(`Capability request timed out: ${capability}`));
+      }, options.requestTimeoutMs ?? 10_000);
+      pending.set(requestId, {
+        resolve: (value) => resolve(value as T),
+        reject,
+        timeout,
+      });
+      window.parent.postMessage(
+        bridgeEnvelope(activeInstanceId, "REQUEST", { requestId, capability, payload }),
+        activeParentOrigin,
+      );
+    });
+  }
+
   function onKeydown(event: KeyboardEvent): void {
     if (event.key === "Escape") sendEvent("shell.close");
   }
@@ -113,26 +157,7 @@ export function connectOverlayApp(options: GuestBridgeOptions = {}): GuestBridge
       return instanceId;
     },
     request<T>(capability: string, payload?: unknown): Promise<T> {
-      if (!instanceId || !parentOrigin)
-        return Promise.reject(new Error("Overlay host is not ready"));
-      const activeInstanceId = instanceId;
-      const activeParentOrigin = parentOrigin;
-      const requestId = `${activeInstanceId}:${++sequence}`;
-      return new Promise<T>((resolve, reject) => {
-        const timeout = setTimeout(() => {
-          pending.delete(requestId);
-          reject(new Error(`Capability request timed out: ${capability}`));
-        }, options.requestTimeoutMs ?? 10_000);
-        pending.set(requestId, {
-          resolve: (value) => resolve(value as T),
-          reject,
-          timeout,
-        });
-        window.parent.postMessage(
-          bridgeEnvelope(activeInstanceId, "REQUEST", { requestId, capability, payload }),
-          activeParentOrigin,
-        );
-      });
+      return requestCapability<T>(capability, payload);
     },
     close() {
       sendEvent("shell.close");
@@ -142,6 +167,18 @@ export function connectOverlayApp(options: GuestBridgeOptions = {}): GuestBridge
     },
     setLauncher(value) {
       sendEvent("launcher.write", value);
+    },
+    requestPresentation(name) {
+      if (!name.trim()) return Promise.reject(new Error("Presentation name is required"));
+      return requestCapability<PresentationSnapshot>("presentation.request", { name });
+    },
+    reportContentSize(size) {
+      return requestCapability<PresentationSnapshot>("presentation.content-size", size);
+    },
+    onPresentation(listener) {
+      presentationListeners.add(listener);
+      if (presentation) listener(presentation);
+      return () => presentationListeners.delete(listener);
     },
     onVisibility(listener) {
       visibilityListeners.add(listener);
@@ -157,6 +194,7 @@ export function connectOverlayApp(options: GuestBridgeOptions = {}): GuestBridge
       }
       pending.clear();
       visibilityListeners.clear();
+      presentationListeners.clear();
     },
   };
 }

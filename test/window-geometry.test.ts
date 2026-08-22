@@ -3,6 +3,7 @@ import {
   constrainGeometry,
   initialGeometry,
   moveGeometry,
+  resizeAnchoredGeometry,
   resizeGeometry,
   snapGeometry,
 } from "../src/core";
@@ -21,5 +22,13 @@ describe("window geometry", () => {
 
     const restoredOnSmallHost = constrainGeometry(resized, { width: 360, height: 520 });
     expect(restoredOnSmallHost).toEqual({ x: 16, y: 16, width: 328, height: 422 });
+
+    const appDrivenResize = resizeAnchoredGeometry(
+      initial,
+      { width: 500, height: 400 },
+      desktop,
+      "bottom-end",
+    );
+    expect(appDrivenResize).toEqual({ x: 924, y: 518, width: 500, height: 400 });
   });
 });

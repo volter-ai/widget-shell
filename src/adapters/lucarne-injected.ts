@@ -1,3 +1,4 @@
+import type { OverlayPresentation } from "../core";
 import { createOverlay, type OverlayController } from "../dom/create-overlay";
 
 interface Bootstrap {
@@ -21,6 +22,9 @@ interface Bootstrap {
     readonly height: number;
     readonly gutter: number;
     readonly placement: "bottom-start" | "bottom-end" | "top-start" | "top-end";
+    readonly presentation?: OverlayPresentation;
+    readonly presentations?: Readonly<Record<string, OverlayPresentation>>;
+    readonly initialPresentation?: string;
     readonly accent?: string;
     readonly radius?: string;
   };
@@ -113,6 +117,11 @@ function mount(config: Bootstrap): void {
         gutter: config.overlay.gutter,
       },
       placement: config.overlay.placement,
+      ...(config.overlay.presentation ? { presentation: config.overlay.presentation } : {}),
+      ...(config.overlay.presentations ? { presentations: config.overlay.presentations } : {}),
+      ...(config.overlay.initialPresentation
+        ? { initialPresentation: config.overlay.initialPresentation }
+        : {}),
       launcher: {
         label: config.overlay.launcherLabel,
         ...(config.overlay.launcherIcon ? { icon: config.overlay.launcherIcon } : {}),

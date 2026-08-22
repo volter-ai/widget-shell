@@ -14,7 +14,7 @@ Host page
 
 ## Core
 
-The core is a deterministic state machine and geometry model with no framework or browser-global dependency. It describes lifecycle, placements, viewport presets, host constraints, movement, resizing, snapping, responsive modes, and recoverable failures.
+The core is a deterministic state machine and geometry model with no framework or browser-global dependency. It describes lifecycle, placements, viewport presets, host constraints, movement, resizing, snapping, responsive modes, presentation policies, logical-to-physical scaling, and recoverable failures.
 
 ## Host
 
@@ -22,11 +22,11 @@ The DOM host owns mount identity, isolation, frame creation, focus, keyboard beh
 
 ## Guest
 
-The guest application owns routing, authentication, data fetching, and application UI. A small guest bridge announces readiness and requests explicitly granted host capabilities.
+The guest application owns routing, authentication, data fetching, and application UI. A small guest bridge announces readiness, requests explicitly granted host capabilities, selects host-declared presentation states, and can report deliberate content dimensions when the active policy permits it.
 
 ## Capability bridge
 
-Messages have a versioned envelope, instance identifier, request identifier, explicit type, and validated payload. The host checks source window and origin. There is no generic code execution or unrestricted DOM capability.
+Messages have a versioned envelope, instance identifier, request identifier, explicit type, and validated payload. The host checks source window and origin. There is no generic code execution or unrestricted DOM capability. Presentation requests use the same request/response path: guests name a declared state or report bounded dimensions, and receive the resolved snapshot rather than authority over outer geometry.
 
 ## Delivery adapters
 
@@ -42,7 +42,7 @@ WXT and Plasmo do not require framework-specific runtime forks. Both consume the
 - One live host per instance identifier
 - No host-page layout shift
 - No page CSS dependence in iframe mode
-- Stable guest viewport during ordinary content changes
+- Stable guest viewport during ordinary content changes; fitting requires an explicit declared policy
 - Bounded geometry inside safe viewport gutters
 - Focus returns to the invoking element on close
 - Reduced motion removes nonessential transitions
