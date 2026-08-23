@@ -215,7 +215,7 @@ const extensionGeometryStore = {
 
 For an ordinary owned-site embed, `createLocalStorageGeometryPersistence(localStorage)` is available. Do not use page `localStorage` from a general content script: that would couple extension state to each host origin.
 
-Persisted geometry is always validated and constrained against the current host before use. A position saved on a large monitor therefore cannot strand the overlay outside a smaller window.
+Persisted geometry is always validated and constrained against the current host before use. A position saved on a large monitor therefore cannot strand the overlay outside a smaller window. Named presentations keep independent geometry, so resizing a terminal, phone, or compact panel cannot overwrite the dimensions restored for another mode.
 
 ## Custom surfaces
 

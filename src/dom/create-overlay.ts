@@ -331,12 +331,19 @@ export function createOverlay(options: OverlayOptions): OverlayController {
     }
   }
 
+  function geometryPersistenceId(): string {
+    return activePresentationName === undefined
+      ? options.id
+      : `${options.id}:presentation:${encodeURIComponent(activePresentationName)}`;
+  }
+
   function persistGeometry(): void {
     const persistence = options.behavior?.persistence;
     if (!persistence) return;
+    const persistenceId = geometryPersistenceId();
     const snapshot = geometry;
     persistenceQueue = persistenceQueue
-      .then(() => persistence.save(options.id, snapshot))
+      .then(() => persistence.save(persistenceId, snapshot))
       .catch(reportError);
   }
 
@@ -440,6 +447,7 @@ export function createOverlay(options: OverlayOptions): OverlayController {
     contentSize = undefined;
     automaticSizingSuspended = false;
     applyPreferredGeometry(authority);
+    restoreGeometry();
     return presentationSnapshot;
   }
 
@@ -469,9 +477,10 @@ export function createOverlay(options: OverlayOptions): OverlayController {
   function restoreGeometry(): void {
     const persistence = options.behavior?.persistence;
     if (!persistence || activePresentation.footprint.mode === "fixed") return;
+    const persistenceId = geometryPersistenceId();
     const revision = geometryRevision;
     void Promise.resolve()
-      .then(() => persistence.load(options.id))
+      .then(() => persistence.load(persistenceId))
       .then((value) => {
         if (destroyed || !host?.isConnected || geometryRevision !== revision) return;
         const restored = parsePersistedGeometry(value);
@@ -1085,8 +1094,9 @@ export function createOverlay(options: OverlayOptions): OverlayController {
       applyGeometry();
       const persistence = options.behavior?.persistence;
       if (persistence?.remove) {
+        const persistenceId = geometryPersistenceId();
         persistenceQueue = persistenceQueue
-          .then(() => persistence.remove?.(options.id))
+          .then(() => persistence.remove?.(persistenceId))
           .catch(reportError);
       }
     },

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.3.1 - 2026-08-23
+
+- Kept persisted geometry independent for each named presentation so one mode cannot restore another mode's dimensions.
+
 ## 0.3.0 - 2026-08-22
 
 - Added framework-free presentation policies that separate physical footprint from responsive or virtual guest viewports.
