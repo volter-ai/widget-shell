@@ -26,6 +26,7 @@ export interface ResponsiveBreakpoints {
 }
 
 export type OverlayMode = "floating" | "sheet" | "fullscreen";
+export type ResizeCorner = "nw" | "ne" | "sw" | "se";
 
 export const DEFAULT_GEOMETRY_LIMITS: GeometryLimits = {
   gutter: 16,
@@ -121,6 +122,47 @@ export function resizeGeometry(
 ): WindowGeometry {
   return constrainGeometry(
     { ...start, width: start.width + deltaWidth, height: start.height + deltaHeight },
+    host,
+    limits,
+  );
+}
+
+/** Resize from one corner while keeping the opposite corner stationary. */
+export function resizeGeometryFromCorner(
+  start: WindowGeometry,
+  corner: ResizeCorner,
+  deltaX: number,
+  deltaY: number,
+  host: HostSize,
+  limits: GeometryLimits = DEFAULT_GEOMETRY_LIMITS,
+): WindowGeometry {
+  const base = constrainGeometry(start, host, limits);
+  const west = corner.endsWith("w");
+  const north = corner.startsWith("n");
+  const fixedX = west ? base.x + base.width : base.x;
+  const fixedY = north ? base.y + base.height : base.y;
+  const maximumWidth = west ? fixedX - limits.gutter : host.width - limits.gutter - fixedX;
+  const maximumHeight = north
+    ? fixedY - limits.gutter
+    : host.height - limits.gutter - limits.launcherSpace - fixedY;
+  const width = clamp(
+    base.width + (west ? -deltaX : deltaX),
+    Math.min(limits.minWidth, maximumWidth),
+    maximumWidth,
+  );
+  const height = clamp(
+    base.height + (north ? -deltaY : deltaY),
+    Math.min(limits.minHeight, maximumHeight),
+    maximumHeight,
+  );
+
+  return constrainGeometry(
+    {
+      x: west ? fixedX - width : fixedX,
+      y: north ? fixedY - height : fixedY,
+      width,
+      height,
+    },
     host,
     limits,
   );

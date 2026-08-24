@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Replaced the permanent bottom-right resize grip with invisible hit targets on all four corners,
+  preserving opposite-corner anchoring and keyboard access.
 - Added semantic `attention` and `neutral` launcher badge tones so informational counts do not
   masquerade as urgent notifications.
 

@@ -5,6 +5,7 @@ import {
   moveGeometry,
   resizeAnchoredGeometry,
   resizeGeometry,
+  resizeGeometryFromCorner,
   snapGeometry,
 } from "../src/core";
 
@@ -30,5 +31,41 @@ describe("window geometry", () => {
       "bottom-end",
     );
     expect(appDrivenResize).toEqual({ x: 924, y: 518, width: 500, height: 400 });
+  });
+
+  it("resizes every corner without moving its opposite anchor", () => {
+    const host = { width: 1000, height: 800 };
+    const start = { x: 300, y: 200, width: 400, height: 400 };
+
+    expect(resizeGeometryFromCorner(start, "nw", -50, -40, host)).toEqual({
+      x: 250,
+      y: 160,
+      width: 450,
+      height: 440,
+    });
+    expect(resizeGeometryFromCorner(start, "ne", 50, -40, host)).toEqual({
+      x: 300,
+      y: 160,
+      width: 450,
+      height: 440,
+    });
+    expect(resizeGeometryFromCorner(start, "sw", -50, 40, host)).toEqual({
+      x: 250,
+      y: 200,
+      width: 450,
+      height: 440,
+    });
+    expect(resizeGeometryFromCorner(start, "se", 50, 40, host)).toEqual({
+      x: 300,
+      y: 200,
+      width: 450,
+      height: 440,
+    });
+    expect(resizeGeometryFromCorner(start, "nw", -1000, -1000, host)).toEqual({
+      x: 16,
+      y: 16,
+      width: 684,
+      height: 584,
+    });
   });
 });

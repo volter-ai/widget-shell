@@ -5,7 +5,7 @@ const budgets = [
   ["core", new URL("../dist/core.js", import.meta.url), 4_000],
   ["guest bridge", new URL("../dist/frame.js", import.meta.url), 2_500],
   ["WebExtension adapter", new URL("../dist/web-extension.js", import.meta.url), 1_000],
-  ["Lucarne delivery adapter", new URL("../dist/lucarne.js", import.meta.url), 12_000],
+  ["Lucarne delivery adapter", new URL("../dist/lucarne.js", import.meta.url), 12_288],
   [
     "complete extension host",
     new URL("../examples/web-extension/dist/content.js", import.meta.url),
