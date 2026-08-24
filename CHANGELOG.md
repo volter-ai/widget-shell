@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Added semantic `attention` and `neutral` launcher badge tones so informational counts do not
+  masquerade as urgent notifications.
+
 ## 0.3.2 - 2026-08-24
 
 - Preserved every Widget Shell theme token through Lucarne delivery, including transparent surfaces,

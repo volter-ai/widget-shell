@@ -4,6 +4,7 @@ import { createOverlay, type OverlayController, type OverlayOptions } from "../s
 interface DemoArgs {
   open: boolean;
   badge: string;
+  badgeTone: "attention" | "neutral";
   viewport: "mobile-sm" | "mobile-md" | "messenger";
   placement: "bottom-end" | "bottom-start" | "top-end" | "top-start";
   appState: "ready" | "loading" | "error";
@@ -36,6 +37,7 @@ class OverlayStoryFixture extends HTMLElement {
       launcher: {
         label: "Open example application",
         badge: args.badge,
+        badgeTone: args.badgeTone,
         ...(args.branded
           ? {
               render: ({ open }: { open: boolean }) => {
@@ -170,6 +172,7 @@ const meta = {
   args: {
     open: true,
     badge: "",
+    badgeTone: "attention",
     viewport: "mobile-sm",
     placement: "bottom-end",
     appState: "ready",
@@ -195,6 +198,7 @@ type Story = StoryObj<DemoArgs>;
 export const MobileApplication: Story = {};
 export const Collapsed: Story = { args: { open: false } };
 export const WithBadge: Story = { args: { open: false, badge: "12" } };
+export const NeutralBadge: Story = { args: { open: false, badge: "551", badgeTone: "neutral" } };
 export const Loading: Story = { args: { appState: "loading" } };
 export const RecoverableError: Story = { args: { appState: "error" } };
 export const CompactMessenger: Story = { args: { viewport: "messenger" } };

@@ -1,3 +1,4 @@
+import type { BadgeTone } from "../core/badge";
 import {
   isPresentationSnapshot,
   type PresentationSize,
@@ -14,12 +15,13 @@ export interface GuestBridge {
   readonly instanceId: string | undefined;
   request<T = unknown>(capability: string, payload?: unknown): Promise<T>;
   close(): void;
-  setBadge(value: string | number | null): void;
+  setBadge(value: string | number | null, tone?: BadgeTone): void;
   setLauncher(value: {
     readonly label?: string;
     readonly icon?: string | null;
     readonly hidden?: boolean;
     readonly badge?: string | number | null;
+    readonly badgeTone?: BadgeTone;
   }): void;
   requestPresentation(name: string): Promise<PresentationSnapshot>;
   reportContentSize(size: PresentationSize): Promise<PresentationSnapshot>;
@@ -162,8 +164,8 @@ export function connectOverlayApp(options: GuestBridgeOptions = {}): GuestBridge
     close() {
       sendEvent("shell.close");
     },
-    setBadge(value) {
-      sendEvent("launcher.badge.write", value);
+    setBadge(value, tone) {
+      sendEvent("launcher.badge.write", tone === undefined ? value : { value, tone });
     },
     setLauncher(value) {
       sendEvent("launcher.write", value);

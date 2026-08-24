@@ -252,7 +252,13 @@ The controller exposes `geometry`, `mode`, `setGeometry()`, and `resetGeometry()
 
 ```ts
 const shell = connectOverlayApp();
-shell.setLauncher({ label: "Open Acme", icon: iconDataUrl, badge: 2, hidden: false });
+shell.setLauncher({
+  label: "Open Acme",
+  icon: iconDataUrl,
+  badge: 2,
+  badgeTone: "neutral", // informational count; `attention` is the default
+  hidden: false,
+});
 const stopVisibility = shell.onVisibility((visible) => app.setActive(visible));
 ```
 

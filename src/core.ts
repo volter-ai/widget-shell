@@ -1,3 +1,4 @@
+export type { BadgeTone } from "./core/badge";
 export {
   constrainViewport,
   type OverlayPlacement,

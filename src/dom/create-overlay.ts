@@ -1,4 +1,5 @@
 import {
+  type BadgeTone,
   bridgeEnvelope,
   constrainGeometry,
   DEFAULT_GEOMETRY_LIMITS,
@@ -62,6 +63,8 @@ export interface LauncherOptions {
   readonly closeLabel?: string;
   readonly icon?: string;
   readonly badge?: string | number;
+  /** `attention` is the default; use `neutral` for informational, non-actionable counts. */
+  readonly badgeTone?: BadgeTone;
   readonly hidden?: boolean;
   readonly render?: (context: LauncherRenderContext) => Node;
 }
@@ -134,7 +137,7 @@ export interface OverlayController {
   close(): void;
   toggle(): void;
   retry(): void;
-  setBadge(value: string | number | null): void;
+  setBadge(value: string | number | null, tone?: BadgeTone): void;
   setLauncher(value: {
     readonly label?: string;
     readonly icon?: string | null;
@@ -612,9 +615,18 @@ export function createOverlay(options: OverlayOptions): OverlayController {
       return;
     }
     if (event.data.type === "EVENT" && event.data.capability === "launcher.badge.write") {
-      const value = event.data.payload;
-      if (value === null || typeof value === "string" || typeof value === "number") {
-        controller.setBadge(value);
+      const payload = event.data.payload;
+      const candidate =
+        typeof payload === "object" && payload !== null && !Array.isArray(payload)
+          ? (payload as Record<string, unknown>)
+          : null;
+      const value = candidate ? candidate.value : payload;
+      const tone = candidate?.tone;
+      if (
+        (value === null || typeof value === "string" || typeof value === "number") &&
+        (tone === undefined || tone === "attention" || tone === "neutral")
+      ) {
+        controller.setBadge(value, tone as BadgeTone | undefined);
       }
       return;
     }
@@ -626,6 +638,7 @@ export function createOverlay(options: OverlayOptions): OverlayController {
       const icon = candidate.icon;
       const hidden = candidate.hidden;
       const badge = candidate.badge;
+      const badgeTone = candidate.badgeTone;
       if (
         (label !== undefined &&
           (typeof label !== "string" || !label.trim() || label.length > 200)) ||
@@ -638,7 +651,8 @@ export function createOverlay(options: OverlayOptions): OverlayController {
           typeof badge !== "string" &&
           typeof badge !== "number") ||
         (typeof badge === "string" && badge.length > 20) ||
-        (typeof badge === "number" && !Number.isFinite(badge))
+        (typeof badge === "number" && !Number.isFinite(badge)) ||
+        (badgeTone !== undefined && badgeTone !== "attention" && badgeTone !== "neutral")
       ) {
         return;
       }
@@ -647,7 +661,8 @@ export function createOverlay(options: OverlayOptions): OverlayController {
         ...(icon === null || typeof icon === "string" ? { icon } : {}),
         ...(typeof hidden === "boolean" ? { hidden } : {}),
       });
-      if (badge !== undefined) controller.setBadge(badge as string | number | null);
+      if (badge !== undefined)
+        controller.setBadge(badge as string | number | null, badgeTone as BadgeTone | undefined);
       return;
     }
     if (event.data.type !== "REQUEST" || !event.data.requestId || !event.data.capability) return;
@@ -1006,7 +1021,7 @@ export function createOverlay(options: OverlayOptions): OverlayController {
       window.addEventListener("pointercancel", endInteraction);
       document.addEventListener("keydown", onKeydown);
       dispatch({ type: "MOUNT" });
-      controller.setBadge(options.launcher.badge ?? null);
+      controller.setBadge(options.launcher.badge ?? null, options.launcher.badgeTone);
       applyGeometry();
       restoreGeometry();
       if (options.lazy === false) ensureFrame();
@@ -1042,11 +1057,12 @@ export function createOverlay(options: OverlayOptions): OverlayController {
       ensureFrame();
       requestAnimationFrame(() => dispatch({ type: "OPENED" }));
     },
-    setBadge(value) {
+    setBadge(value, tone = "attention") {
       if (!badgeElement) return;
       const empty = value === null || value === "" || value === 0;
       badgeElement.hidden = empty;
       badgeElement.textContent = empty ? "" : String(value);
+      badgeElement.dataset.tone = tone;
     },
     setLauncher(value) {
       let rerender = false;
