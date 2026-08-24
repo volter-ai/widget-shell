@@ -259,6 +259,8 @@ export const SHELL_STYLES = `
     text-align: center;
   }
 
+  .ws-badge[data-tone="neutral"] { background: var(--ws-text-muted); }
+
   .ws-badge[hidden] { display: none; }
 
   .ws-announcer {
