@@ -246,7 +246,7 @@ This preserves labeling, keyboard behavior, badges, geometry, and lifecycle even
 
 ## Interaction and accessibility
 
-The move and resize handles support pointer input and arrow keys. Hold Shift for larger keyboard steps. They disappear in sheet and full-screen modes, where manual floating geometry is retained and restored when the host grows again.
+The move handle and four invisible corner resize targets support pointer input and arrow keys. Corner targets expose only the platform resize cursor during pointer use; keyboard focus reveals an outline. Hold Shift for larger keyboard steps. The controls disappear in sheet and full-screen modes, where manual floating geometry is retained and restored when the host grows again.
 
 The controller exposes `geometry`, `mode`, `setGeometry()`, and `resetGeometry()` for host-level controls. Guest applications use `connectOverlayApp()` to request granted capabilities, close themselves, publish launcher identity, or react to outer-shell visibility without inspecting their embedding DOM:
 

@@ -17,9 +17,10 @@ import {
   type PresentationSize,
   type PresentationSnapshot,
   preferredPresentationSize,
+  type ResizeCorner,
   type ResponsiveBreakpoints,
   resizeAnchoredGeometry,
-  resizeGeometry,
+  resizeGeometryFromCorner,
   resolvePresentationSnapshot,
   resolveViewport,
   responsiveMode,
@@ -153,6 +154,7 @@ export interface OverlayController {
 
 interface ActiveInteraction {
   readonly kind: "move" | "resize";
+  readonly resizeCorner: ResizeCorner | undefined;
   readonly pointerId: number;
   readonly startX: number;
   readonly startY: number;
@@ -311,7 +313,7 @@ export function createOverlay(options: OverlayOptions): OverlayController {
   let badgeElement: HTMLSpanElement | undefined;
   let announcer: HTMLSpanElement | undefined;
   let dragHandle: HTMLButtonElement | undefined;
-  let resizeHandle: HTMLButtonElement | undefined;
+  let resizeHandles: HTMLButtonElement[] = [];
   let registry: OverlayRegistryHandle | undefined;
   let timeout: ReturnType<typeof setTimeout> | undefined;
   let previousFocus: Element | null = null;
@@ -470,8 +472,8 @@ export function createOverlay(options: OverlayOptions): OverlayController {
     panel.style.setProperty("--ws-width", `${geometry.width}px`);
     panel.style.setProperty("--ws-height", `${geometry.height}px`);
     if (dragHandle) dragHandle.hidden = options.behavior?.draggable === false;
-    if (resizeHandle) {
-      resizeHandle.hidden =
+    for (const handle of resizeHandles) {
+      handle.hidden =
         options.behavior?.resizable === false || activePresentation.footprint.mode === "fixed";
     }
     syncPresentation();
@@ -799,7 +801,11 @@ export function createOverlay(options: OverlayOptions): OverlayController {
     if (event.key === "Escape" && state.phase !== "closed") closeInternal(true);
   }
 
-  function beginInteraction(kind: ActiveInteraction["kind"], event: PointerEvent): void {
+  function beginInteraction(
+    kind: ActiveInteraction["kind"],
+    event: PointerEvent,
+    resizeCorner?: ResizeCorner,
+  ): void {
     if (event.button !== 0 || mode !== "floating") return;
     if (kind === "move" && options.behavior?.draggable === false) return;
     if (kind === "resize" && options.behavior?.resizable === false) return;
@@ -807,6 +813,7 @@ export function createOverlay(options: OverlayOptions): OverlayController {
     registry?.activate(false);
     interaction = {
       kind,
+      resizeCorner,
       pointerId: event.pointerId,
       startX: event.clientX,
       startY: event.clientY,
@@ -829,7 +836,14 @@ export function createOverlay(options: OverlayOptions): OverlayController {
     geometry =
       interaction.kind === "move"
         ? moveGeometry(interaction.geometry, deltaX, deltaY, hostSize(), limits)
-        : resizeGeometry(interaction.geometry, deltaX, deltaY, hostSize(), limits);
+        : resizeGeometryFromCorner(
+            interaction.geometry,
+            interaction.resizeCorner ?? "se",
+            deltaX,
+            deltaY,
+            hostSize(),
+            limits,
+          );
     applyGeometry();
     event.preventDefault();
   }
@@ -847,7 +861,11 @@ export function createOverlay(options: OverlayOptions): OverlayController {
     announceGeometry(kind);
   }
 
-  function updateFromKeyboard(kind: ActiveInteraction["kind"], event: KeyboardEvent): void {
+  function updateFromKeyboard(
+    kind: ActiveInteraction["kind"],
+    event: KeyboardEvent,
+    resizeCorner?: ResizeCorner,
+  ): void {
     if (
       mode !== "floating" ||
       !["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)
@@ -861,7 +879,14 @@ export function createOverlay(options: OverlayOptions): OverlayController {
     geometry =
       kind === "move"
         ? moveGeometry(geometry, horizontal, vertical, hostSize(), limits)
-        : resizeGeometry(geometry, horizontal, vertical, hostSize(), limits);
+        : resizeGeometryFromCorner(
+            geometry,
+            resizeCorner ?? "se",
+            horizontal,
+            vertical,
+            hostSize(),
+            limits,
+          );
     geometryRevision += 1;
     if (kind === "resize") {
       automaticSizingSuspended = true;
@@ -953,19 +978,28 @@ export function createOverlay(options: OverlayOptions): OverlayController {
       dragHandle.addEventListener("pointerdown", (event) => beginInteraction("move", event));
       dragHandle.addEventListener("keydown", (event) => updateFromKeyboard("move", event));
 
-      resizeHandle = document.createElement("button");
-      resizeHandle.type = "button";
-      resizeHandle.className = "ws-resize-handle";
-      resizeHandle.setAttribute("aria-label", `Resize ${options.content.title ?? "overlay"}`);
-      resizeHandle.setAttribute("aria-keyshortcuts", "ArrowUp ArrowDown ArrowLeft ArrowRight");
-      resizeHandle.hidden = options.behavior?.resizable === false;
-      resizeHandle.addEventListener("pointerdown", (event) => beginInteraction("resize", event));
-      resizeHandle.addEventListener("keydown", (event) => updateFromKeyboard("resize", event));
+      resizeHandles = (["nw", "ne", "sw", "se"] as const).map((corner) => {
+        const handle = document.createElement("button");
+        handle.type = "button";
+        handle.className = "ws-resize-handle";
+        handle.dataset.corner = corner;
+        handle.setAttribute(
+          "aria-label",
+          `Resize ${options.content.title ?? "overlay"} from ${corner} corner`,
+        );
+        handle.setAttribute("aria-keyshortcuts", "ArrowUp ArrowDown ArrowLeft ArrowRight");
+        handle.hidden = options.behavior?.resizable === false;
+        handle.addEventListener("pointerdown", (event) =>
+          beginInteraction("resize", event, corner),
+        );
+        handle.addEventListener("keydown", (event) => updateFromKeyboard("resize", event, corner));
+        return handle;
+      });
       announcer = document.createElement("span");
       announcer.className = "ws-announcer";
       announcer.setAttribute("role", "status");
       announcer.setAttribute("aria-live", "polite");
-      panel.append(windowElement, dragHandle, resizeHandle, announcer);
+      panel.append(windowElement, dragHandle, ...resizeHandles, announcer);
 
       launcherWrap = document.createElement("div");
       launcherWrap.className = "ws-launcher-wrap";
@@ -1010,7 +1044,7 @@ export function createOverlay(options: OverlayOptions): OverlayController {
         badgeElement = undefined;
         announcer = undefined;
         dragHandle = undefined;
-        resizeHandle = undefined;
+        resizeHandles = [];
         throw error;
       }
       panel.addEventListener("pointerdown", () => registry?.activate(false));
@@ -1155,7 +1189,7 @@ export function createOverlay(options: OverlayOptions): OverlayController {
       badgeElement = undefined;
       announcer = undefined;
       dragHandle = undefined;
-      resizeHandle = undefined;
+      resizeHandles = [];
       dispatch({ type: "UNMOUNT" });
       listeners.clear();
       presentationListeners.clear();

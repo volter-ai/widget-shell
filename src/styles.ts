@@ -152,8 +152,6 @@ export const SHELL_STYLES = `
     border: 0;
     color: var(--ws-text-muted);
     background: transparent;
-    opacity: .58;
-    cursor: grab;
     touch-action: none;
   }
 
@@ -163,6 +161,8 @@ export const SHELL_STYLES = `
     width: 48px;
     height: 22px;
     padding: 0;
+    opacity: .58;
+    cursor: grab;
     transform: translateX(-50%);
   }
 
@@ -179,26 +179,22 @@ export const SHELL_STYLES = `
   }
 
   .ws-resize-handle {
-    right: 0;
-    bottom: 0;
-    width: 30px;
-    height: 30px;
-    cursor: nwse-resize;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    opacity: 0;
   }
 
-  .ws-resize-handle::after {
-    position: absolute;
-    right: 6px;
-    bottom: 6px;
-    width: 9px;
-    height: 9px;
-    border-right: 2px solid currentColor;
-    border-bottom: 2px solid currentColor;
-    content: "";
-  }
+  .ws-resize-handle[data-corner^="n"] { top: -6px; }
+  .ws-resize-handle[data-corner^="s"] { bottom: -6px; }
+  .ws-resize-handle[data-corner$="w"] { left: -6px; }
+  .ws-resize-handle[data-corner$="e"] { right: -6px; }
+  .ws-resize-handle[data-corner="nw"], .ws-resize-handle[data-corner="se"] { cursor: nwse-resize; }
+  .ws-resize-handle[data-corner="ne"], .ws-resize-handle[data-corner="sw"] { cursor: nesw-resize; }
 
   .ws-panel[data-interacting="move"] .ws-drag-handle { cursor: grabbing; opacity: 1; }
-  .ws-drag-handle:hover, .ws-resize-handle:hover { opacity: 1; }
+  .ws-drag-handle:hover { opacity: 1; }
+  .ws-resize-handle:focus-visible { opacity: 1; }
 
   .ws-launcher-wrap {
     position: relative;
