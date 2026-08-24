@@ -1,4 +1,5 @@
 import type { OverlayPlacement, OverlayPresentation } from "./core";
+import type { OverlayTheme } from "./dom/create-overlay";
 
 declare const __LUCARNE_RUNTIME_SOURCE__: string;
 
@@ -23,10 +24,8 @@ export interface LucarneDeliveryOptions {
   readonly presentation?: OverlayPresentation;
   readonly presentations?: Readonly<Record<string, OverlayPresentation>>;
   readonly initialPresentation?: string;
-  readonly theme?: {
-    readonly accent?: string;
-    readonly radius?: string;
-  };
+  /** The same shell tokens accepted by `createOverlay`; delivery must not narrow customization. */
+  readonly theme?: OverlayTheme;
 }
 
 export type LucarneInjector = (input: LucarneInjectorInput) => string;
@@ -70,8 +69,7 @@ export function createLucarneInjector(options: LucarneDeliveryOptions): LucarneI
       ...(options.presentation ? { presentation: options.presentation } : {}),
       ...(options.presentations ? { presentations: options.presentations } : {}),
       ...(options.initialPresentation ? { initialPresentation: options.initialPresentation } : {}),
-      ...(options.theme?.accent ? { accent: options.theme.accent } : {}),
-      ...(options.theme?.radius ? { radius: options.theme.radius } : {}),
+      ...(options.theme ? { theme: options.theme } : {}),
     };
     const bootstrap = {
       ns,

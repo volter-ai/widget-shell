@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 0.3.2 - 2026-08-24
+
+- Preserved every Widget Shell theme token through Lucarne delivery, including transparent surfaces,
+  instead of narrowing remote overlays to accent and radius.
+
 ## 0.3.1 - 2026-08-23
 
 - Kept persisted geometry independent for each named presentation so one mode cannot restore another mode's dimensions.

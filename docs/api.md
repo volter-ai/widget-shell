@@ -34,6 +34,8 @@ await WidgetHost.attach(session, { ns: "acme", html, injector });
 The guest uses Lucarne's transport-only runtime, so the app is rendered once inside Widget Shell's
 viewport rather than nesting Lucarne's legacy pill/panel chrome inside another overlay. The adapter
 preloads the guest because Lucarne must be able to deliver live patches while the overlay is closed.
+Lucarne accepts the same `theme` tokens as `createOverlay`, including transparent surfaces; changing
+those tokens participates in the injected shell's revision identity.
 It accepts the same direct or named presentation policies as `createOverlay`; configuration changes
 participate in its revision identity, so Lucarne replaces stale shell geometry as well as stale HTML.
 

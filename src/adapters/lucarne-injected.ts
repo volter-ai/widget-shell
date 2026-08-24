@@ -1,5 +1,5 @@
 import type { OverlayPresentation } from "../core";
-import { createOverlay, type OverlayController } from "../dom/create-overlay";
+import { createOverlay, type OverlayController, type OverlayTheme } from "../dom/create-overlay";
 
 interface Bootstrap {
   readonly ns: string;
@@ -25,8 +25,7 @@ interface Bootstrap {
     readonly presentation?: OverlayPresentation;
     readonly presentations?: Readonly<Record<string, OverlayPresentation>>;
     readonly initialPresentation?: string;
-    readonly accent?: string;
-    readonly radius?: string;
+    readonly theme?: OverlayTheme;
   };
 }
 
@@ -129,10 +128,7 @@ function mount(config: Bootstrap): void {
       },
       initiallyOpen: config.overlay.initiallyOpen,
       lazy: false,
-      theme: {
-        ...(config.overlay.accent ? { accent: config.overlay.accent } : {}),
-        ...(config.overlay.radius ? { radius: config.overlay.radius } : {}),
-      },
+      ...(config.overlay.theme ? { theme: config.overlay.theme } : {}),
     });
     controller.mount();
 
