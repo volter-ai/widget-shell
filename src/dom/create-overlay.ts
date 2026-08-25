@@ -68,6 +68,11 @@ export interface LauncherOptions {
   readonly badgeTone?: BadgeTone;
   readonly hidden?: boolean;
   readonly render?: (context: LauncherRenderContext) => Node;
+  /**
+   * An application-owned control rendered beside the launcher only while the overlay is open.
+   * Use this for a single prominent companion action; the returned node owns its own semantics.
+   */
+  readonly companion?: () => Node;
 }
 
 export interface OverlayErrorRenderContext {
@@ -307,7 +312,9 @@ export function createOverlay(options: OverlayOptions): OverlayController {
   let viewportElement: HTMLDivElement | undefined;
   let frame: HTMLIFrameElement | undefined;
   let launcher: HTMLButtonElement | undefined;
+  let launcherRow: HTMLDivElement | undefined;
   let launcherWrap: HTMLDivElement | undefined;
+  let launcherCompanion: HTMLDivElement | undefined;
   let loadingElement: HTMLDivElement | undefined;
   let errorElement: HTMLDivElement | undefined;
   let badgeElement: HTMLSpanElement | undefined;
@@ -583,6 +590,7 @@ export function createOverlay(options: OverlayOptions): OverlayController {
     panel.setAttribute("aria-hidden", String(!visible));
     panel.dataset.phase = state.phase;
     anchor.dataset.open = String(visible);
+    if (launcherCompanion) launcherCompanion.hidden = !visible;
     launcher.setAttribute("aria-expanded", String(visible));
     renderLauncher(visible);
     loadingElement.hidden = state.guest !== "loading";
@@ -1001,9 +1009,17 @@ export function createOverlay(options: OverlayOptions): OverlayController {
       announcer.setAttribute("aria-live", "polite");
       panel.append(windowElement, dragHandle, ...resizeHandles, announcer);
 
+      launcherRow = document.createElement("div");
+      launcherRow.className = "ws-launcher-row";
+      launcherRow.hidden = options.launcher.hidden ?? false;
+
+      launcherCompanion = document.createElement("div");
+      launcherCompanion.className = "ws-launcher-companion";
+      launcherCompanion.hidden = true;
+      if (options.launcher.companion) launcherCompanion.append(options.launcher.companion());
+
       launcherWrap = document.createElement("div");
       launcherWrap.className = "ws-launcher-wrap";
-      launcherWrap.hidden = options.launcher.hidden ?? false;
       launcher = document.createElement("button");
       launcher.type = "button";
       launcher.className = "ws-launcher";
@@ -1015,7 +1031,8 @@ export function createOverlay(options: OverlayOptions): OverlayController {
       badgeElement.className = "ws-badge";
       badgeElement.setAttribute("aria-hidden", "true");
       launcherWrap.append(launcher, badgeElement);
-      anchor.append(panel, launcherWrap);
+      launcherRow.append(launcherCompanion, launcherWrap);
+      anchor.append(panel, launcherRow);
       stage.append(anchor);
       shadow.append(stage);
       try {
@@ -1038,7 +1055,9 @@ export function createOverlay(options: OverlayOptions): OverlayController {
         windowElement = undefined;
         viewportElement = undefined;
         launcher = undefined;
+        launcherRow = undefined;
         launcherWrap = undefined;
+        launcherCompanion = undefined;
         loadingElement = undefined;
         errorElement = undefined;
         badgeElement = undefined;
@@ -1114,7 +1133,7 @@ export function createOverlay(options: OverlayOptions): OverlayController {
         launcherIcon = value.icon ?? undefined;
         rerender = true;
       }
-      if (value.hidden !== undefined && launcherWrap) launcherWrap.hidden = value.hidden;
+      if (value.hidden !== undefined && launcherRow) launcherRow.hidden = value.hidden;
       if (rerender) {
         renderedLauncherOpen = undefined;
         renderLauncher(state.phase !== "closed" && state.phase !== "unmounted");
@@ -1183,7 +1202,9 @@ export function createOverlay(options: OverlayOptions): OverlayController {
       viewportElement = undefined;
       frame = undefined;
       launcher = undefined;
+      launcherRow = undefined;
       launcherWrap = undefined;
+      launcherCompanion = undefined;
       loadingElement = undefined;
       errorElement = undefined;
       badgeElement = undefined;

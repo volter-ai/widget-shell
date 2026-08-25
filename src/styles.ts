@@ -196,11 +196,25 @@ export const SHELL_STYLES = `
   .ws-drag-handle:hover { opacity: 1; }
   .ws-resize-handle:focus-visible { opacity: 1; }
 
-  .ws-launcher-wrap {
+  .ws-launcher-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    pointer-events: none;
+  }
+
+  .ws-anchor[data-placement$="start"] .ws-launcher-row {
+    flex-direction: row-reverse;
+  }
+
+  .ws-launcher-wrap,
+  .ws-launcher-companion {
     position: relative;
     padding: 4px;
     pointer-events: auto;
   }
+
+  .ws-launcher-companion[hidden] { display: none; }
 
   .ws-launcher {
     display: grid;
@@ -299,13 +313,13 @@ export const SHELL_STYLES = `
     border-radius: 0;
   }
 
-  .ws-anchor[data-mode="fullscreen"] .ws-launcher-wrap {
+  .ws-anchor[data-mode="fullscreen"] .ws-launcher-row {
     position: fixed;
     right: 12px;
     bottom: 12px;
   }
 
-  .ws-anchor[data-mode="fullscreen"][data-open="true"] .ws-launcher-wrap {
+  .ws-anchor[data-mode="fullscreen"][data-open="true"] .ws-launcher-row {
     top: 12px;
     bottom: auto;
   }

@@ -12,6 +12,7 @@ interface DemoArgs {
   resizable: boolean;
   branded: boolean;
   responsive: "auto" | "sheet" | "fullscreen";
+  companion: boolean;
 }
 
 let demoSequence = 0;
@@ -38,6 +39,19 @@ class OverlayStoryFixture extends HTMLElement {
         label: "Open example application",
         badge: args.badge,
         badgeTone: args.badgeTone,
+        ...(args.companion
+          ? {
+              companion: () => {
+                const button = document.createElement("button");
+                button.type = "button";
+                button.textContent = "Share";
+                button.setAttribute("aria-label", "Share application");
+                button.style.cssText =
+                  "height:40px;padding:0 14px;border:1px solid rgba(20,20,28,.14);border-radius:12px;background:white;color:#17171c;font:600 13px system-ui;cursor:pointer";
+                return button;
+              },
+            }
+          : {}),
         ...(args.branded
           ? {
               render: ({ open }: { open: boolean }) => {
@@ -180,6 +194,7 @@ const meta = {
     resizable: true,
     branded: false,
     responsive: "auto",
+    companion: false,
   },
   argTypes: {
     viewport: { control: "select", options: ["mobile-sm", "mobile-md", "messenger"] },
@@ -204,6 +219,7 @@ export const RecoverableError: Story = { args: { appState: "error" } };
 export const CompactMessenger: Story = { args: { viewport: "messenger" } };
 export const TopStart: Story = { args: { placement: "top-start" } };
 export const Branded: Story = { args: { branded: true, badge: "7" } };
+export const OpenWithCompanion: Story = { args: { companion: true } };
 export const ResponsiveSheet: Story = { args: { responsive: "sheet" } };
 export const Fullscreen: Story = { args: { responsive: "fullscreen" } };
 export const CoordinatedOverlays: Story = { render: renderPair };
