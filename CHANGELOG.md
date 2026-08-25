@@ -2,8 +2,18 @@
 
 ## Unreleased
 
+## 0.4.0 - 2026-08-25
+
+- Added one application-owned companion surface beside the launcher while an overlay is open,
+  without expanding the permanent collapsed launcher into a toolbar.
+
+## 0.3.4 - 2026-08-24
+
 - Replaced the permanent bottom-right resize grip with invisible hit targets on all four corners,
   preserving opposite-corner anchoring and keyboard access.
+
+## 0.3.3 - 2026-08-24
+
 - Added semantic `attention` and `neutral` launcher badge tones so informational counts do not
   masquerade as urgent notifications.
 
