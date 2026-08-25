@@ -84,6 +84,29 @@ overlay.mount();
 
 `exclusive` coordination closes another exclusive overlay before opening this one. Use `independent` for tools that intentionally coexist; activating either still raises its layer.
 
+### Open-state companion action
+
+An application may place one prominent, application-owned control beside the launcher while the
+overlay is open. The companion is absent from the collapsed state, so it does not turn the launcher
+into a permanent toolbar. The returned node must provide its own accessible name and interaction:
+
+```ts
+launcher: {
+  label: "Open Acme",
+  companion: () => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = "Share";
+    button.addEventListener("click", openSharingPanel);
+    return button;
+  },
+}
+```
+
+Widget Shell owns only the companion's lifecycle and placement. The application owns its behavior,
+state, and any popover it opens. Closing the overlay removes the companion from interaction without
+implying that the underlying application operation should stop.
+
 ## Presentation geometry
 
 `viewport` remains the concise compatibility API for a stable responsive surface. Presentation policies are the explicit form when an application needs content fitting, a simulated logical viewport, or named states:
