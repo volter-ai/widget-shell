@@ -590,7 +590,7 @@ export function createOverlay(options: OverlayOptions): OverlayController {
     panel.setAttribute("aria-hidden", String(!visible));
     panel.dataset.phase = state.phase;
     anchor.dataset.open = String(visible);
-    if (launcherCompanion) launcherCompanion.hidden = !visible;
+    if (launcherCompanion) launcherCompanion.hidden = !visible || !options.launcher.companion;
     launcher.setAttribute("aria-expanded", String(visible));
     renderLauncher(visible);
     loadingElement.hidden = state.guest !== "loading";
