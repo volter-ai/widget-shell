@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.4.1 - 2026-08-28
+
+- Accepted Chromium `use_dynamic_url` hosts when creating trusted extension iframe content.
+
 ## 0.4.0 - 2026-08-25
 
 - Added one application-owned companion surface beside the launcher while an overlay is open,
