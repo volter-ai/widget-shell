@@ -22,6 +22,14 @@ const EXTENSION_PROTOCOLS = new Set([
   "safari-web-extension:",
 ]);
 
+function serializedExtensionOrigin(value: string): string {
+  const url = new URL(value);
+  if (!EXTENSION_PROTOCOLS.has(url.protocol) || !url.host) {
+    throw new Error(`Unsupported extension URL: ${url.href}`);
+  }
+  return `${url.protocol}//${url.host}`;
+}
+
 /**
  * Returns the serialized security origin used by extension frame messages.
  *
@@ -29,11 +37,7 @@ const EXTENSION_PROTOCOLS = new Set([
  * formed from the already trusted runtime URL instead.
  */
 export function extensionOrigin(runtime: ExtensionRuntimeLike): string {
-  const url = new URL(runtime.getURL("/"));
-  if (!EXTENSION_PROTOCOLS.has(url.protocol) || !url.host) {
-    throw new Error(`Unsupported extension URL: ${url.href}`);
-  }
-  return `${url.protocol}//${url.host}`;
+  return serializedExtensionOrigin(runtime.getURL("/"));
 }
 
 export function createExtensionIframeContent(
@@ -42,10 +46,10 @@ export function createExtensionIframeContent(
   options: ExtensionIframeOptions = {},
 ): IframeContent {
   const src = runtime.getURL(path);
-  const origin = extensionOrigin(runtime);
-  if (!src.startsWith(`${origin}/`)) {
-    throw new Error("Extension content URL must belong to the current extension");
-  }
+  // Chromium may give web-accessible resources a randomized host when the
+  // manifest enables `use_dynamic_url`. The runtime-created URL remains the
+  // authority; its serialized origin is the one frame messages actually use.
+  const origin = serializedExtensionOrigin(src);
   return {
     kind: "iframe",
     src,
