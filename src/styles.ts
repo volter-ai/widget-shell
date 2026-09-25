@@ -60,6 +60,10 @@ export const SHELL_STYLES = `
 
   .ws-window {
     position: relative;
+    /* Above the drag and resize handles: nothing the shell draws may overlap
+       the guest frame, or the browser reports the guest's content as occluded
+       (IntersectionObserver v2), which a guest uses to trust a click. */
+    z-index: 5;
     width: 100%;
     height: 100%;
     overflow: hidden;
@@ -156,7 +160,7 @@ export const SHELL_STYLES = `
   }
 
   .ws-drag-handle {
-    top: -9px;
+    top: -14px;
     left: 50%;
     width: 48px;
     height: 22px;
@@ -185,10 +189,10 @@ export const SHELL_STYLES = `
     opacity: 0;
   }
 
-  .ws-resize-handle[data-corner^="n"] { top: -6px; }
-  .ws-resize-handle[data-corner^="s"] { bottom: -6px; }
-  .ws-resize-handle[data-corner$="w"] { left: -6px; }
-  .ws-resize-handle[data-corner$="e"] { right: -6px; }
+  .ws-resize-handle[data-corner^="n"] { top: -12px; }
+  .ws-resize-handle[data-corner^="s"] { bottom: -12px; }
+  .ws-resize-handle[data-corner$="w"] { left: -12px; }
+  .ws-resize-handle[data-corner$="e"] { right: -12px; }
   .ws-resize-handle[data-corner="nw"], .ws-resize-handle[data-corner="se"] { cursor: nwse-resize; }
   .ws-resize-handle[data-corner="ne"], .ws-resize-handle[data-corner="sw"] { cursor: nesw-resize; }
 
