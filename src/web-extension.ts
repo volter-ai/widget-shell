@@ -55,9 +55,10 @@ export function createExtensionIframeContent(
   // `chrome-extension://<runtime.id>`, not the dynamic host. Frame messages
   // must address that origin, or the guest never receives INIT.
   const url = new URL(src);
-  const origin = url.protocol === "chrome-extension:" && runtime.id
-    ? `chrome-extension://${runtime.id}`
-    : serializedExtensionOrigin(src);
+  const origin =
+    url.protocol === "chrome-extension:" && runtime.id
+      ? `chrome-extension://${runtime.id}`
+      : serializedExtensionOrigin(src);
   return {
     kind: "iframe",
     src,

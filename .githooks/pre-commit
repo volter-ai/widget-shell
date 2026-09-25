@@ -1,0 +1,4 @@
+#!/bin/sh
+# Format and lint-fix what is staged, and stage the result: the release's lint then has nothing to refuse.
+npx --no-install biome check --write --staged --no-errors-on-unmatched || exit 1
+git diff --name-only --cached --diff-filter=ACM -z | xargs -0 git add --
