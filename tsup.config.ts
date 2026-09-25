@@ -1,8 +1,8 @@
 import { buildSync } from "esbuild";
 import { defineConfig } from "tsup";
 
-const lucarneRuntime = buildSync({
-  entryPoints: ["src/adapters/lucarne-injected.ts"],
+const pageRuntime = buildSync({
+  entryPoints: ["src/cdp/page-runtime.ts"],
   bundle: true,
   format: "iife",
   minify: true,
@@ -11,14 +11,14 @@ const lucarneRuntime = buildSync({
   write: false,
 }).outputFiles?.[0]?.text;
 
-if (!lucarneRuntime) throw new Error("Could not build the Lucarne delivery runtime");
+if (!pageRuntime) throw new Error("Could not build the CDP page runtime");
 
 export default defineConfig({
   entry: {
     index: "src/index.ts",
     core: "src/core.ts",
     frame: "src/frame.ts",
-    lucarne: "src/lucarne.ts",
+    cdp: "src/cdp.ts",
     "web-extension": "src/web-extension.ts",
   },
   format: ["esm"],
@@ -29,6 +29,6 @@ export default defineConfig({
   treeshake: true,
   target: "es2022",
   define: {
-    __LUCARNE_RUNTIME_SOURCE__: JSON.stringify(lucarneRuntime),
+    __WIDGET_SHELL_PAGE_RUNTIME__: JSON.stringify(pageRuntime),
   },
 });

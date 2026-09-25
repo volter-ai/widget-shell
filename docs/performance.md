@@ -11,10 +11,10 @@ The headless merge gate builds a real Manifest V3 content-script bundle and enfo
 | Framework-free core | 4 KiB |
 | Guest bridge | 2.5 KiB |
 | WebExtension adapter | 1 KiB |
-| Complete Lucarne delivery adapter | 12 KiB |
+| Complete CDP delivery, including the page runtime | 16 KiB |
 | Complete extension host, excluding the guest app | 12 KiB |
 
-The `0.3.0` adoption-layer build measures approximately 3.5 KiB for core, 2 KiB for the guest bridge, 0.7 KiB for the WebExtension adapter, 11.6 KiB for the self-contained Lucarne delivery adapter, and 10.4 KiB for the complete extension host. Budgets are ceilings, not targets to fill.
+The `0.5.0` build measures approximately 3.7 KiB for core, 2 KiB for the guest bridge, 0.7 KiB for the WebExtension adapter, 14.3 KiB for the CDP delivery with its self-contained page runtime, and 10.6 KiB for the complete extension host. Budgets are ceilings, not targets to fill.
 
 ## Runtime rules
 

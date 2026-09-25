@@ -28,7 +28,6 @@ The roadmap is capability-oriented; dates are intentionally omitted.
 - Typed custom capabilities
 - Pop-out and side-panel coordination
 - Extension project generator
-- Lucarne delivery adapter
 
 ## 1.0 — stable public contracts
 

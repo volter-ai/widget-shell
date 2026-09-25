@@ -5,7 +5,7 @@
 [![Node.js](https://img.shields.io/badge/node-%3E%3D22-339933?logo=nodedotjs)](package.json)
 [![Storybook](https://img.shields.io/badge/Storybook-live-ff4785?logo=storybook&logoColor=white)](https://volter-ai.github.io/widget-shell/)
 
-**The application runtime for overlays.** Turn an existing responsive web app into a polished in-page widget or browser extension without rebuilding the app.
+**The application runtime for overlays.** Turn an existing responsive web app into a polished in-page widget, delivered as a browser extension or injected into any page behind a CDP endpoint, without rebuilding the app.
 
 > Bring your app. Widget Shell makes it safely and convincingly present over another app.
 
@@ -18,7 +18,8 @@ Extension frameworks answer _how to build and inject an extension component_. Ch
 Widget Shell answers a different question: **how does an existing application become an excellent overlay product?**
 
 - Bring any owned, mobile-responsive, embeddable application.
-- Use one guest application across a floating phone, compact widget, sheet, side panel, full screen, or Lucarne-injected surface.
+- Use one guest application across a floating phone, compact widget, sheet, side panel, or full screen.
+- Deliver the same guest application either as a browser extension or by injection over any Chrome DevTools Protocol endpoint.
 - Default to a strongly isolated iframe with a stable responsive viewport.
 - Grant page access through explicit, validated capabilities rather than unrestricted DOM access.
 - Ship the default experience or replace its launcher, chrome, transport, persistence, styles, and framework adapters independently.
@@ -50,6 +51,25 @@ overlay.mount();
 ```
 
 The default preset gives the guest a stable `390 × 667` CSS-pixel viewport. Its collapsed launcher is transparent and unbranded; setting `theme.accent` opts into a filled treatment. It can be dragged, resized, snapped, and persisted while floating; smaller hosts progressively switch it into sheet and full-screen modes. See the [API guide](docs/api.md).
+
+## Deliveries
+
+The same guest application reaches a page in one of two ways:
+
+- **Browser extension.** A content script mounts the overlay with an extension-origin iframe. See the [extension integration guide](docs/extensions.md).
+- **CDP injection.** `injectOverlay` from `@volter-ai-dev/widget-shell/cdp` mounts the overlay into the pages behind any CDP endpoint: a hosted Chrome, a person's own Chrome started with remote debugging, or any conforming CDP implementation. It runs before page scripts on every navigation, bypasses the page's CSP where the endpoint allows it, and re-mounts the overlay if the page removes it.
+
+```ts
+import { injectOverlay } from "@volter-ai-dev/widget-shell/cdp";
+
+const overlay = await injectOverlay(cdpUrl, {
+  id: "acme",
+  content: { kind: "iframe", src: "https://app.acme.example/widget", title: "Acme" },
+  launcher: { label: "Open Acme" },
+});
+// later
+await overlay.remove();
+```
 
 Applications that need more than a responsive phone can declare presentation policies. Physical footprint and logical guest viewport are independent: a guest can explicitly request a bounded content-fit surface, or keep a real `390 × 844` layout viewport while the shell scales it into a smaller footprint. Named states let one application move between peek, panel, simulated-device, sheet, and full-screen presentations without receiving arbitrary page authority.
 

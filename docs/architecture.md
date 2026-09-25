@@ -4,7 +4,7 @@
 
 ```text
 Host page
-└── delivery adapter (WebExtension, embed, Lucarne)
+└── delivery (WebExtension, CDP injection, embed)
     └── overlay host
         ├── lifecycle and geometry core
         ├── launcher and optional default chrome
@@ -32,7 +32,7 @@ Messages have a versioned envelope, instance identifier, request identifier, exp
 
 - **WebExtension:** a small isolated-world content script mounts an extension-origin iframe.
 - **Embed:** an ordinary script mounts the host on an owned site.
-- **Lucarne:** an injection adapter serializes the mounting entry point for a controlled browser.
+- **CDP injection:** the controller serializes the overlay configuration into a page script, registers it to run before page scripts in every document of every page behind a CDP endpoint, bypasses the page's CSP for its session, and serves granted capabilities through a CDP binding. An in-page guard re-mounts the host when the page removes it.
 - **Framework adapters:** React, Preact, Vue, or Svelte integrate lifecycle without changing core semantics.
 
 WXT and Plasmo do not require framework-specific runtime forks. Both consume the shared WebExtension adapter; their examples contain only the framework-owned entry-point, invalidation, and build conventions. This keeps the security and persistence boundary identical across extension toolchains.

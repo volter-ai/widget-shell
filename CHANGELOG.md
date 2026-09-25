@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 0.5.0 - 2026-09-25
+
+- Added CDP delivery (`@volter-ai-dev/widget-shell/cdp`): `injectOverlay` mounts the same guest
+  application the extension delivery mounts into the pages behind any CDP endpoint, before page
+  scripts on every navigation, with the page's CSP bypassed where the endpoint allows it, an in-page
+  re-mount guard, and host capabilities served through a CDP binding.
+
 ## 0.4.1 - 2026-08-28
 
 - Accepted Chromium `use_dynamic_url` hosts when creating trusted extension iframe content.
@@ -21,11 +28,6 @@
 - Added semantic `attention` and `neutral` launcher badge tones so informational counts do not
   masquerade as urgent notifications.
 
-## 0.3.2 - 2026-08-24
-
-- Preserved every Widget Shell theme token through Lucarne delivery, including transparent surfaces,
-  instead of narrowing remote overlays to accent and radius.
-
 ## 0.3.1 - 2026-08-23
 
 - Kept persisted geometry independent for each named presentation so one mode cannot restore another mode's dimensions.
@@ -34,7 +36,6 @@
 
 - Added framework-free presentation policies that separate physical footprint from responsive or virtual guest viewports.
 - Added bounded content-fit negotiation, named guest-selectable presentation states, minimum readable scale fallback, and observable resolved presentation snapshots.
-- Passed presentation policies through the Lucarne adapter and made its replacement identity include shell configuration as well as guest HTML.
 - Added a Storybook Geometry Lab for responsive, content-fit, virtual, constrained-scale, and guest-selected states.
 
 ## 0.2.3 - 2026-08-21

@@ -6,38 +6,65 @@ Widget Shell currently publishes five tree-shakeable entry points:
 - `@volter-ai-dev/widget-shell/core` — framework- and browser-global-free state, geometry, and protocol primitives
 - `@volter-ai-dev/widget-shell/frame` — the guest-side bridge
 - `@volter-ai-dev/widget-shell/web-extension` — validated extension-origin and storage adapters
-- `@volter-ai-dev/widget-shell/lucarne` — a serialized delivery adapter for Lucarne-controlled browsers
+- `@volter-ai-dev/widget-shell/cdp` — delivery by injection over any Chrome DevTools Protocol endpoint
 
 The `0.x` contracts are usable, but may evolve between minor releases.
 
-## Lucarne adapter
+## CDP delivery
 
-Lucarne owns the browser session, durable injection, state envelope, and intent queues. Widget Shell
-owns only the launcher, stable viewport, responsive geometry, and visual lifecycle:
+`injectOverlay(endpoint, options)` mounts an overlay into the pages behind a Chrome DevTools
+Protocol endpoint and resolves once every open page carries it:
 
 ```ts
-import { createLucarneInjector } from "@volter-ai-dev/widget-shell/lucarne";
-import { WidgetHost } from "lucarne/widget/host";
+import { injectOverlay } from "@volter-ai-dev/widget-shell/cdp";
 
-const injector = createLucarneInjector({
-  launcherLabel: "Open Acme",
-  launcherIcon: iconDataUrl,
-  presentation: {
-    footprint: { mode: "resizable", preferred: { width: 320, height: 600 } },
-    viewport: { mode: "virtual", width: 390, height: 844 },
+const overlay = await injectOverlay(
+  { url: "https://browsers.example/sessions/42/cdp", headers: { authorization: `Bearer ${token}` } },
+  {
+    id: "acme",
+    content: { kind: "iframe", src: "https://app.acme.example/widget", title: "Acme" },
+    launcher: { label: "Open Acme", icon: iconDataUrl },
+    presentation: {
+      footprint: { mode: "resizable", preferred: { width: 320, height: 600 } },
+      viewport: { mode: "virtual", width: 390, height: 844 },
+    },
+    capabilities: {
+      "acme.page-title": async () => currentTitle(),
+    },
   },
-});
+);
 
-await WidgetHost.attach(session, { ns: "acme", html, injector });
+console.log(overlay.pages); // page targets carrying the overlay
+await overlay.remove();
 ```
 
-The guest uses Lucarne's transport-only runtime, so the app is rendered once inside Widget Shell's
-viewport rather than nesting Lucarne's legacy pill/panel chrome inside another overlay. The adapter
-preloads the guest because Lucarne must be able to deliver live patches while the overlay is closed.
-Lucarne accepts the same `theme` tokens as `createOverlay`, including transparent surfaces; changing
-those tokens participates in the injected shell's revision identity.
-It accepts the same direct or named presentation policies as `createOverlay`; configuration changes
-participate in its revision identity, so Lucarne replaces stale shell geometry as well as stale HTML.
+The endpoint may be:
+
+- a browser WebSocket URL (`ws://…/devtools/browser/…`): every page is covered, including tabs
+  opened later;
+- a page WebSocket URL (`ws://…/devtools/page/…`): that page is covered;
+- an HTTP(S) discovery root: resolved through `<root>/json/version`, with its query string carried
+  onto the discovered WebSocket URL;
+- `{ url, headers }` when the endpoint requires request headers;
+- an already-connected page session with `send` and `on`, such as a Playwright or Puppeteer
+  `CDPSession`. The session remains the caller's; `remove()` never closes it.
+
+The client uses only the standard `fetch` and `WebSocket` globals, so it runs in Node.js 22 or later
+and in other runtimes that provide them.
+
+For each page, the delivery registers the overlay with `Page.addScriptToEvaluateOnNewDocument`, so it
+mounts before page scripts in every new document, and evaluates it into the current document. It
+requests `Page.setBypassCSP`, which lasts as long as the CDP session; each page session is therefore
+held open until `remove()`. Endpoints that do not implement the bypass still receive the overlay. In
+the page, a guard re-mounts the overlay whenever the page removes its host element or replaces the
+body, and an identical configuration applied twice keeps the live overlay rather than replacing it.
+The overlay mounts only in top-level documents.
+
+Options are the serializable subset of `createOverlay` options: `launcher.render`,
+`launcher.companion`, `slots`, `target`, `onError` and `behavior.persistence` are unavailable because
+functions and nodes cannot cross into the page. `capabilities` remain available: handlers run in the
+calling process and the page reaches them through a CDP binding (`Runtime.addBinding`), so payloads
+and results must be JSON-serializable.
 
 ## WebExtension adapter
 
