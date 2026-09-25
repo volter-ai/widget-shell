@@ -14,7 +14,7 @@ The roadmap is capability-oriented; dates are intentionally omitted. What shippe
 
 - Compatibility and deprecation policy
 - Accessibility conformance evidence
-- Performance budgets with published measurements
+- Runtime performance budgets (a closed overlay's cost, frame timing) beside the bundle budgets in [docs/performance.md](docs/performance.md)
 - Cross-browser support matrix
 - Maintainer and release-governance maturity
 

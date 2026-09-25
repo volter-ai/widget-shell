@@ -2,8 +2,6 @@
 
 ## Unreleased
 
-## 0.5.2 - 2026-09-25
-
 - Nothing the shell draws overlaps the guest frame: the window sits above the drag and resize handles, whose grab areas now lie outside it (the drag pill above the window, a 12 px corner ring). A handle over the frame made Chrome report every guest element as occluded to IntersectionObserver v2, so a guest could never confirm its content was visible.
 - `createExtensionIframeContent` addresses the extension's own origin (`chrome-extension://<runtime.id>`) when the runtime has an id. A frame loaded from Chromium's `use_dynamic_url` host keeps that origin (measured in Chrome 149), so the dynamic host's origin dropped INIT and READY and the overlay never became ready.
 
