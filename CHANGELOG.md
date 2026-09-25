@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-## 0.5.0 - 2026-09-25
+## 0.5.1 - 2026-09-25
 
 - Added CDP delivery (`@volter-ai-dev/widget-shell/cdp`): `injectOverlay` mounts the same guest
   application the extension delivery mounts into the pages behind any CDP endpoint, before page
