@@ -1,30 +1,11 @@
 # Roadmap
 
-The roadmap is capability-oriented; dates are intentionally omitted.
+The roadmap is capability-oriented; dates are intentionally omitted. What shipped is in
+[CHANGELOG.md](CHANGELOG.md).
 
-## 0.1 — trustworthy foundation
+## Next — integration breadth and application platform
 
-- Framework-free lifecycle, geometry, and protocol core
-- iframe host with a stable `mobile-sm` viewport
-- Default launcher and overlay chrome
-- Guest readiness and capability bridge
-- Exact mount/unmount behavior
-- Storybook states and hostile-page fixtures
-- Raw WebExtension example
-- Position and size persistence
-- Drag, resize, snap, sheet, and full-screen transitions
-- Multiple-overlay arbitration
-
-## 0.2 — integration breadth
-
-- WXT and Plasmo examples/adapters *(implemented; real-toolchain builds run nightly)*
-- Shadow DOM host mode
 - React and Preact adapters
-
-## 0.3 — application platform
-
-- Responsive, content-fit, and virtual-viewport presentation policies *(implemented)*
-- Named presentation states and resolved geometry observability *(implemented)*
 - Typed custom capabilities
 - Pop-out and side-panel coordination
 - Extension project generator
