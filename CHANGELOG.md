@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- `createExtensionIframeContent` addresses the extension's own origin (`chrome-extension://<runtime.id>`) when the runtime has an id. A frame loaded from Chromium's `use_dynamic_url` host keeps that origin (measured in Chrome 149), so the dynamic host's origin dropped INIT and READY and the overlay never became ready.
+
 ## 0.5.1 - 2026-09-25
 
 - Added CDP delivery (`@volter-ai-dev/widget-shell/cdp`): `injectOverlay` mounts the same guest

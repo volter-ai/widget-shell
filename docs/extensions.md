@@ -11,7 +11,7 @@ The content script is privileged and bundled with the extension. The extension p
 
 ## Shared adapter
 
-`createExtensionIframeContent(runtime, path)` converts a trusted runtime URL into iframe configuration with the resource's strict serialized extension origin, including Chromium's randomized `use_dynamic_url` host. `createExtensionGeometryPersistence(storageArea)` stores versioned geometry in extension storage, scoped by overlay identifier. These utilities accept the structural WebExtension APIs used by `chrome`, `browser`, WXT, and Plasmo without importing any framework.
+`createExtensionIframeContent(runtime, path)` converts a trusted runtime URL into iframe configuration. The frame may load from Chromium's randomized `use_dynamic_url` host, but its document keeps the extension's own origin, so with `runtime.id` present (`chrome.runtime`) the allowed origin is `chrome-extension://<id>`; otherwise it is the resource URL's strict serialized extension origin. `createExtensionGeometryPersistence(storageArea)` stores versioned geometry in extension storage, scoped by overlay identifier. These utilities accept the structural WebExtension APIs used by `chrome`, `browser`, WXT, and Plasmo without importing any framework.
 
 Grant the smallest possible host matches, permissions, web-accessible resources, and capabilities. Never point the privileged host at arbitrary or remotely selected frame URLs.
 

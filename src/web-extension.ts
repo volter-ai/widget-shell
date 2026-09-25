@@ -3,6 +3,8 @@ import type { GeometryPersistence } from "./dom/persistence";
 
 export interface ExtensionRuntimeLike {
   getURL(path: string): string;
+  /** The extension's id (`chrome.runtime.id`): its document origin's host in Chromium. */
+  readonly id?: string;
 }
 
 export interface ExtensionStorageAreaLike {
@@ -46,10 +48,16 @@ export function createExtensionIframeContent(
   options: ExtensionIframeOptions = {},
 ): IframeContent {
   const src = runtime.getURL(path);
-  // Chromium may give web-accessible resources a randomized host when the
-  // manifest enables `use_dynamic_url`. The runtime-created URL remains the
-  // authority; its serialized origin is the one frame messages actually use.
-  const origin = serializedExtensionOrigin(src);
+  // Chromium gives web-accessible resources a randomized host when the
+  // manifest enables `use_dynamic_url`, but the document loaded from it keeps
+  // the extension's own origin: measured in Chrome 149, the frame's
+  // `location.origin` and the `MessageEvent.origin` of its messages are
+  // `chrome-extension://<runtime.id>`, not the dynamic host. Frame messages
+  // must address that origin, or the guest never receives INIT.
+  const url = new URL(src);
+  const origin = url.protocol === "chrome-extension:" && runtime.id
+    ? `chrome-extension://${runtime.id}`
+    : serializedExtensionOrigin(src);
   return {
     kind: "iframe",
     src,
