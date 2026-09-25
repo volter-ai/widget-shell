@@ -1,6 +1,5 @@
 # Widget Shell
 
-[![CI](https://github.com/volter-ai/widget-shell/actions/workflows/ci.yml/badge.svg)](https://github.com/volter-ai/widget-shell/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D22-339933?logo=nodedotjs)](package.json)
 [![Storybook](https://img.shields.io/badge/Storybook-live-ff4785?logo=storybook&logoColor=white)](https://volter-ai.github.io/widget-shell/)

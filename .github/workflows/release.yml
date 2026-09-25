@@ -24,3 +24,5 @@ jobs:
       - name: Confirm tag and package versions agree
         run: node scripts/verify-release-version.mjs "${GITHUB_REF_NAME}"
       - run: npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

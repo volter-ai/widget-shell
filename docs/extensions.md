@@ -29,8 +29,8 @@ The extension-local HTML entry point is emitted as `app.html` and explicitly dec
 
 [`examples/plasmo`](../examples/plasmo) uses a plain content script rather than CSUI. Adding Plasmo's CSUI host would create a second isolation and lifecycle layer without improving security. A global singleton guard destroys the prior instance during development reinjection; `pagehide` handles normal teardown.
 
-The responsive guest is an ordinary Plasmo tab page exposed only to the example's narrow host match. Plasmo's build chain is development-only; the example's production dependency audit remains clean. Because its legacy Parcel tree resolves differently across npm 10 platforms, nightly resolves the pinned manifest without rewriting the committed lock rather than claiming cross-platform `npm ci` reproducibility that upstream does not provide.
+The responsive guest is an ordinary Plasmo tab page exposed only to the example's narrow host match. Plasmo's build chain is development-only; the example's production dependency audit remains clean. Because its legacy Parcel tree resolves differently across npm 10 platforms, install it from the pinned manifest without rewriting the committed lock; cross-platform `npm ci` reproducibility is not something upstream provides.
 
 ## Compatibility evidence
 
-Merge CI builds the framework-free package and raw extension in under one minute. Nightly CI additionally builds the WXT example for Chrome and Firefox and the Plasmo example for Chrome from the package's actual public entry points. Framework toolchain drift therefore cannot silently invalidate the documented integrations without making every merge pay their installation cost.
+`npm run check` builds the framework-free package and raw extension in under one minute. The WXT example (Chrome and Firefox) and the Plasmo example (Chrome) build from the package's actual public entry points with their own `npm run build`, run when a change touches an integration.
