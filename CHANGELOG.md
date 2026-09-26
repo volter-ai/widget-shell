@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.5.3 - 2026-09-26
+
+- The shell's default colours are the Volter brand's semantic roles in light and dark (company decision 0018), resolved at build to `var(--volter-<role>, light-dark(<light>, <dark>))`. A host's `theme` still overrides every `--ws-*` property, and nothing fetches the brand at runtime.
+
 ## 0.5.2 - 2026-09-25
 
 - Nothing the shell draws overlaps the guest frame: the window sits above the drag and resize handles, whose grab areas now lie outside it (the drag pill above the window, a 12 px corner ring). A handle over the frame made Chrome report every guest element as occluded to IntersectionObserver v2, so a guest could never confirm its content was visible.
