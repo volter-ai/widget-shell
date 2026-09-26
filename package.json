@@ -63,7 +63,8 @@
   },
   "scripts": {
     "prepare": "git config core.hooksPath .githooks || true",
-    "build": "tsup",
+    "build": "npm run build:styles && tsup",
+    "build:styles": "node scripts/build-styles.mjs",
     "clean": "tsup --clean",
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",

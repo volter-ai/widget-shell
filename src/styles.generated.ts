@@ -1,12 +1,15 @@
+// Generated from src/styles.css by scripts/build-styles.mjs. Edit that file.
 export const SHELL_STYLES = `
   :host {
-    --ws-accent: #17171c;
-    --ws-surface: #ffffff;
-    --ws-surface-muted: #f4f4f7;
-    --ws-text: #17171c;
-    --ws-text-muted: #666673;
-    --ws-border: rgba(20, 20, 28, 0.14);
-    --ws-shadow: 0 18px 60px rgba(16, 18, 30, 0.2), 0 3px 12px rgba(16, 18, 30, 0.12);
+    /* Defaults are the Volter brand's roles; a host's theme (the element's own
+       style) overrides each. */
+    --ws-accent: var(--volter-action-default, light-dark(#16252c, #e4f09c));
+    --ws-surface: var(--volter-surface-raised, light-dark(#fbfaf7, #16252c));
+    --ws-surface-muted: var(--volter-surface-subtle, light-dark(#f2f1eb, #1d2d34));
+    --ws-text: var(--volter-text-primary, light-dark(#16252c, #f3f2ec));
+    --ws-text-muted: var(--volter-text-muted, light-dark(#5d6970, #a9b0ad));
+    --ws-border: var(--volter-border-default, light-dark(#d9dad3, #2c3d45));
+    --ws-shadow: var(--volter-shadow-floating, 0 12px 32px rgba(21, 23, 22, 0.14), 0 2px 8px rgba(21, 23, 22, 0.08));
     --ws-radius: 18px;
     all: initial;
     color-scheme: light dark;
@@ -237,12 +240,16 @@ export const SHELL_STYLES = `
     border-color: var(--ws-border);
     background: color-mix(in srgb, var(--ws-surface) 82%, transparent);
   }
+  /* vendor: their own colours. A host's accent is the host's own colour, set only
+     by its theme; the launcher's ink and edge over it contrast with that colour,
+     not with the scheme. */
   :host([data-ws-accent="true"]) .ws-launcher {
     border-color: rgba(255,255,255,.22);
     color: white;
     background: var(--ws-accent);
-    box-shadow: 0 8px 30px rgba(25, 25, 50, .25);
   }
+  /* end vendor */
+  :host([data-ws-accent="true"]) .ws-launcher { box-shadow: var(--volter-shadow-floating, 0 12px 32px rgba(21, 23, 22, 0.14), 0 2px 8px rgba(21, 23, 22, 0.08)); }
   :host([data-ws-accent="true"]) .ws-launcher:hover { filter: brightness(1.06); }
   .ws-launcher:focus-visible,
   .ws-retry:focus-visible,
@@ -267,8 +274,8 @@ export const SHELL_STYLES = `
     padding: 0 6px;
     border: 2px solid var(--ws-surface);
     border-radius: 10px;
-    color: white;
-    background: #d92d20;
+    color: var(--volter-text-on-strong, light-dark(#ffffff, #16252c));
+    background: var(--volter-status-danger-base, light-dark(#d24a1f, #f07650));
     font: 700 11px/16px ui-sans-serif, sans-serif;
     text-align: center;
   }

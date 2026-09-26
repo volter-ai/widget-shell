@@ -10,7 +10,8 @@
       "!!dist",
       "!!storybook-static",
       "!!examples/web-extension/dist",
-      "!!examples/plasmo/build"
+      "!!examples/plasmo/build",
+      "!src/styles.css"
     ]
   },
   "formatter": {

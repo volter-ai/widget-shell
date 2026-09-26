@@ -31,7 +31,7 @@ import {
   type WindowGeometry,
 } from "../core";
 import { INITIAL_OVERLAY_STATE } from "../core/lifecycle";
-import { SHELL_STYLES } from "../styles";
+import { SHELL_STYLES } from "../styles.generated";
 import { type GeometryPersistence, parsePersistedGeometry } from "./persistence";
 import { type OverlayRegistryHandle, registerOverlay } from "./registry";
 
