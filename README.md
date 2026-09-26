@@ -1,3 +1,5 @@
+<p align="center"><img src="https://brand.volter.ai/logo/widget-shell/svg?size=96" alt="Widget Shell"></p>
+
 # Widget Shell
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
