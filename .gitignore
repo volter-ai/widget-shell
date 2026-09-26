@@ -11,3 +11,4 @@ coverage/
 .env
 .env.*
 !.env.example
+.storybook/brand-theme.generated.ts
