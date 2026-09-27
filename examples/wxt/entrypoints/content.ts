@@ -1,8 +1,8 @@
-import { createOverlay } from "@volter-ai-dev/widget-shell";
+import { createOverlay } from "@volter/widget-shell";
 import {
   createExtensionGeometryPersistence,
   createExtensionIframeContent,
-} from "@volter-ai-dev/widget-shell/web-extension";
+} from "@volter/widget-shell/web-extension";
 import { browser } from "wxt/browser";
 import { defineContentScript } from "wxt/utils/define-content-script";
 

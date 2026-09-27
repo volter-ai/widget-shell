@@ -2,11 +2,11 @@
 
 Widget Shell currently publishes five tree-shakeable entry points:
 
-- `@volter-ai-dev/widget-shell` — the complete DOM host and all core exports
-- `@volter-ai-dev/widget-shell/core` — framework- and browser-global-free state, geometry, and protocol primitives
-- `@volter-ai-dev/widget-shell/frame` — the guest-side bridge
-- `@volter-ai-dev/widget-shell/web-extension` — validated extension-origin and storage adapters
-- `@volter-ai-dev/widget-shell/cdp` — delivery by injection over any Chrome DevTools Protocol endpoint
+- `@volter/widget-shell` — the complete DOM host and all core exports
+- `@volter/widget-shell/core` — framework- and browser-global-free state, geometry, and protocol primitives
+- `@volter/widget-shell/frame` — the guest-side bridge
+- `@volter/widget-shell/web-extension` — validated extension-origin and storage adapters
+- `@volter/widget-shell/cdp` — delivery by injection over any Chrome DevTools Protocol endpoint
 
 The `0.x` contracts are usable, but may evolve between minor releases.
 
@@ -16,7 +16,7 @@ The `0.x` contracts are usable, but may evolve between minor releases.
 Protocol endpoint and resolves once every open page carries it:
 
 ```ts
-import { injectOverlay } from "@volter-ai-dev/widget-shell/cdp";
+import { injectOverlay } from "@volter/widget-shell/cdp";
 
 const overlay = await injectOverlay(
   { url: "https://browsers.example/sessions/42/cdp", headers: { authorization: `Bearer ${token}` } },
@@ -74,7 +74,7 @@ Do not derive an extension message origin with `new URL(runtime.getURL("/")).ori
 import {
   createExtensionGeometryPersistence,
   createExtensionIframeContent,
-} from "@volter-ai-dev/widget-shell/web-extension";
+} from "@volter/widget-shell/web-extension";
 
 const content = createExtensionIframeContent(browser.runtime, "app.html", {
   title: "Acme",
@@ -85,7 +85,7 @@ const persistence = createExtensionGeometryPersistence(browser.storage.local);
 ## Create an overlay
 
 ```ts
-import { createOverlay } from "@volter-ai-dev/widget-shell";
+import { createOverlay } from "@volter/widget-shell";
 
 const overlay = createOverlay({
   id: "acme",

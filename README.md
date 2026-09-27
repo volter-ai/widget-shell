@@ -32,7 +32,7 @@ Widget Shell is in initial development. The `0.x` public contracts are usable bu
 ## API
 
 ```ts
-import { createOverlay } from "@volter-ai-dev/widget-shell";
+import { createOverlay } from "@volter/widget-shell";
 
 const overlay = createOverlay({
   id: "acme-support",
@@ -58,10 +58,10 @@ The default preset gives the guest a stable `390 × 667` CSS-pixel viewport. Its
 The same guest application reaches a page in one of two ways:
 
 - **Browser extension.** A content script mounts the overlay with an extension-origin iframe. See the [extension integration guide](docs/extensions.md).
-- **CDP injection.** `injectOverlay` from `@volter-ai-dev/widget-shell/cdp` mounts the overlay into the pages behind any CDP endpoint: a hosted Chrome, a person's own Chrome started with remote debugging, or any conforming CDP implementation. It runs before page scripts on every navigation, bypasses the page's CSP where the endpoint allows it, and re-mounts the overlay if the page removes it.
+- **CDP injection.** `injectOverlay` from `@volter/widget-shell/cdp` mounts the overlay into the pages behind any CDP endpoint: a hosted Chrome, a person's own Chrome started with remote debugging, or any conforming CDP implementation. It runs before page scripts on every navigation, bypasses the page's CSP where the endpoint allows it, and re-mounts the overlay if the page removes it.
 
 ```ts
-import { injectOverlay } from "@volter-ai-dev/widget-shell/cdp";
+import { injectOverlay } from "@volter/widget-shell/cdp";
 
 const overlay = await injectOverlay(cdpUrl, {
   id: "acme",

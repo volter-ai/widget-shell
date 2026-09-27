@@ -1,9 +1,9 @@
 import type { OverlayOptions } from "../dom/create-overlay";
 
 /** `Symbol.for` key under which the injected script hands its configuration to the page runtime. */
-export const PAGE_BOOTSTRAP_KEY = "@volter-ai-dev/widget-shell/cdp:bootstrap";
+export const PAGE_BOOTSTRAP_KEY = "@volter/widget-shell/cdp:bootstrap";
 /** `Symbol.for` key of the per-document registry of injected overlays, keyed by overlay id. */
-export const PAGE_REGISTRY_KEY = "@volter-ai-dev/widget-shell/cdp:overlays";
+export const PAGE_REGISTRY_KEY = "@volter/widget-shell/cdp:overlays";
 
 /** The serializable subset of `OverlayOptions` that can cross into a page as data. */
 export type SerializableOverlayOptions = Omit<

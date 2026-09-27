@@ -4,7 +4,7 @@ This is a complete Plasmo project. A plain content script owns Widget Shell's al
 
 ```sh
 npm install
-npm install --no-save @volter-ai-dev/widget-shell
+npm install --no-save @volter/widget-shell
 npm run build
 ```
 

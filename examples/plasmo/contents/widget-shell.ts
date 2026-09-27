@@ -1,8 +1,8 @@
-import { createOverlay, type OverlayController } from "@volter-ai-dev/widget-shell";
+import { createOverlay, type OverlayController } from "@volter/widget-shell";
 import {
   createExtensionGeometryPersistence,
   createExtensionIframeContent,
-} from "@volter-ai-dev/widget-shell/web-extension";
+} from "@volter/widget-shell/web-extension";
 import type { PlasmoCSConfig } from "plasmo";
 
 export const config: PlasmoCSConfig = {

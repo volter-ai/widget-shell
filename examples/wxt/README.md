@@ -4,7 +4,7 @@ This is a complete WXT project: the content script owns the shell, the iframe is
 
 ```sh
 npm install
-npm install --no-save @volter-ai-dev/widget-shell
+npm install --no-save @volter/widget-shell
 npm run build
 npm run build:firefox
 ```

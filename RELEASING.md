@@ -1,12 +1,9 @@
 # Releasing
 
-Releases are ordinary GitHub Releases and publish to npm in a separate background workflow with provenance.
+A release is a version on `main` that npm does not have yet; the `publish` workflow publishes it in the background with provenance.
 
-1. Update `package.json` according to semantic versioning.
+1. Update `package.json` (and `package-lock.json`) according to semantic versioning.
 2. Move relevant entries into `CHANGELOG.md` and document migrations.
-3. Commit the release preparation to `main`.
-4. Create and publish a GitHub Release tagged `v<package version>`.
-5. The release workflow checks lint, types and the build, verifies the tag, and publishes with npm provenance.
+3. Commit the release to `main`. The workflow checks lint, types and the build, then publishes.
 
-The workflow publishes with the repository's `NPM_TOKEN` secret, the npm publish token Volter's other packages use. The protected GitHub `npm` environment should permit only the `main` branch. Releases do not block continued development on `main`.
-
+The workflow publishes with the repository's `NPM_TOKEN` secret. Releases do not block continued development on `main`.

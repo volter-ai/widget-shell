@@ -14,7 +14,7 @@ Widget Shell is the app-agnostic runtime that makes an owned responsive applicat
 - Never use evaluated remote code or grant a remote frame extension privileges.
 - Mount and unmount must be idempotent and exactly reversible.
 - Closed-state work must remain negligible; no polling.
-- Public exports require documentation and a changeset once releases begin.
+- Public exports require documentation and a `CHANGELOG.md` entry.
 - Tests have a stringent inclusion bar: cover complex invariants with meaningful regression risk, not implementation wording or static text.
 - Merge CI stays headless and targets under one minute. Chromium interaction suites run nightly.
 - Preserve accessibility, reduced-motion behavior, and hostile-page isolation in every surface.

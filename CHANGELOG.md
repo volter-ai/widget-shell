@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 0.6.0 - 2026-09-27
+
+- The package is published as `@volter/widget-shell`; install that name and change imports to it.
+- Add an application-owned companion surface beside the launcher while an overlay is open.
+
 ## 0.5.3 - 2026-09-26
 
 - The shell's default colours are the Volter brand's semantic roles in light and dark (company decision 0018), resolved at build to `var(--volter-<role>, light-dark(<light>, <dark>))`. A host's `theme` still overrides every `--ws-*` property, and nothing fetches the brand at runtime.
@@ -13,7 +18,7 @@
 
 ## 0.5.1 - 2026-09-25
 
-- Added CDP delivery (`@volter-ai-dev/widget-shell/cdp`): `injectOverlay` mounts the same guest
+- Added CDP delivery (`@volter/widget-shell/cdp`): `injectOverlay` mounts the same guest
   application the extension delivery mounts into the pages behind any CDP endpoint, before page
   scripts on every navigation, with the page's CSP bypassed where the endpoint allows it, an in-page
   re-mount guard, and host capabilities served through a CDP binding.

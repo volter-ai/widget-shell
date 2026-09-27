@@ -9,7 +9,7 @@ interface OverlayRegistry {
   layer: number;
 }
 
-const REGISTRY_KEY = Symbol.for("@volter-ai-dev/widget-shell/registry/v1");
+const REGISTRY_KEY = Symbol.for("@volter/widget-shell/registry/v1");
 
 function registry(): OverlayRegistry {
   const root = globalThis as typeof globalThis & { [REGISTRY_KEY]?: OverlayRegistry };

@@ -1,0 +1,36 @@
+# Autopublish: a push to main whose package.json carries a version npm does not
+# have yet checks and builds the package and publishes it with provenance.
+# Releasing is bumping the version on main (RELEASING.md). Auth is the
+# repository secret NPM_TOKEN.
+name: publish
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+concurrency: publish
+permissions:
+  contents: read
+  id-token: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          cache: npm
+      - name: Is this version on npm yet
+        id: check
+        run: |
+          spec="$(node -p "const p=require('./package.json'); p.name+'@'+p.version")"
+          if npm view "$spec" version >/dev/null 2>&1; then echo "$spec is published"; else echo "$spec is new"; echo new=1 >> "$GITHUB_OUTPUT"; fi
+      - if: steps.check.outputs.new
+        run: npm ci --ignore-scripts
+      - if: steps.check.outputs.new
+        run: npm run check
+      - if: steps.check.outputs.new
+        run: npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

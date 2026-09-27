@@ -1,4 +1,4 @@
-import { connectOverlayApp } from "@volter-ai-dev/widget-shell/frame";
+import { connectOverlayApp } from "@volter/widget-shell/frame";
 import { useEffect, useState } from "react";
 
 const bridge = connectOverlayApp();
