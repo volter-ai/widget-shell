@@ -11,7 +11,8 @@
       "!!storybook-static",
       "!!examples/web-extension/dist",
       "!!examples/plasmo/build",
-      "!src/styles.css"
+      "!src/styles.css",
+      "!!.github"
     ]
   },
   "formatter": {
