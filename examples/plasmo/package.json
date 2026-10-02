@@ -9,14 +9,14 @@
     "build": "plasmo build"
   },
   "dependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
   },
   "devDependencies": {
-    "@types/chrome": "^0.1.1",
-    "@types/node": "^24.0.0",
+    "@types/chrome": "^0.3.3",
+    "@types/node": "^26.6.3",
     "plasmo": "^0.90.5",
-    "typescript": "^5.9.3"
+    "typescript": "^7.0.2"
   },
   "manifest": {
     "permissions": [
