@@ -5,6 +5,8 @@
 # (an npm automation token with write on the @volter scope).
 name: publish
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 concurrency:
   group: publish

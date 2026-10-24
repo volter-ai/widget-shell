@@ -1,6 +1,16 @@
 name: Publish Storybook
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - ".storybook/**"
+      - "public/**"
+      - "src/**"
+      - "stories/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/docs.yml"
   workflow_dispatch:
 
 permissions:
